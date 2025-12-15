@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ws.fet</groupId>
+	<artifactId>msp</artifactId>
+	<version>2.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<parent>
+		<groupId>com.ws</groupId>
+		<artifactId>superparent</artifactId>
+		<version>2.7.0-SNAPSHOT</version>
+	</parent>
+
+	<developers>
+		<developer>
+			<id>yc.chen</id>
+			<name>YC Chen</name>
+			<email>yc.chen@wisespotgroup.com</email>
+			<roles>
+				<role>Project Manager</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>lendice.lin</id>
+			<name>Lendice Lin</name>
+			<email>lendice.lin@wisespotgroup.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>jason.cheng</id>
+			<name>Jason Cheng</name>
+			<email>kh.cheng@wisespotgroup.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:https://git.wisespotgroup.com.hk/wisespot/TWN-SI-17001.git</connection>
+		<developerConnection>scm:git:https://git.wisespotgroup.com.hk/wisespot/TWN-SI-17001.git</developerConnection>
+		<url>scm:git:https://git.wisespotgroup.com.hk/wisespot/TWN-SI-17001</url>
+	</scm>
+
+	<modules>
+		<module>Common</module>
+		<module>DAL</module>
+		<module>SAC</module>
+		<module>CacheServer</module>
+		<module>MultiSMS</module>
+		<module>HttpApi</module>
+		<module>FileHandler</module>
+		<module>Tester</module>
+		<module>ActionReport</module>
+		<module>IBMMQSAC</module>
+		<module>IbmMQClient</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- WSLib -->
+			<dependency>
+				<groupId>com.ws</groupId>
+				<artifactId>CommonUtil</artifactId>
+				<version>${ws.common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws</groupId>
+				<artifactId>HibernateSupport</artifactId>
+				<version>${ws.hbm.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.yaml</groupId>
+						<artifactId>snakeyaml</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.ws</groupId>
+				<artifactId>JMXSupport</artifactId>
+				<version>${ws.jmx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws</groupId>
+				<artifactId>MongoSupport</artifactId>
+				<version>${ws.mongo.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws.mc</groupId>
+				<artifactId>WiseMC</artifactId>
+				<version>${wisemc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws</groupId>
+				<artifactId>WiseLCS</artifactId>
+				<version>${wiselcs.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws</groupId>
+				<artifactId>SmppClient</artifactId>
+				<version>${ws.smppclient.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws.superparent</groupId>
+				<artifactId>ui</artifactId>
+				<version>${project.parent.version}</version>
+			</dependency>
+			<!-- Project Module -->
+			<dependency>
+				<groupId>com.ws.fet.msp</groupId>
+				<artifactId>DAL</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws.fet.msp</groupId>
+				<artifactId>Common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws.fet.msp</groupId>
+				<artifactId>CacheServer</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws.fet.msp</groupId>
+				<artifactId>MultiSMS</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws.fet.msp</groupId>
+				<artifactId>HttpApi</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws.fet.msp</groupId>
+				<artifactId>SAC</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws.fet.msp</groupId>
+				<artifactId>ActionReport</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws.fet.msp</groupId>
+				<artifactId>IBMMQSAC</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ws.fet.msp</groupId>
+				<artifactId>IBMMQClient</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>1</version>
+			</dependency>
+
+			<!-- 3rd party -->
+			<dependency>
+				<groupId>org.apache.velocity</groupId>
+				<artifactId>velocity</artifactId>
+				<version>${velocity.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.logging</groupId>
+				<artifactId>jboss-logging</artifactId>
+				<version>${jboss.logging.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>artemis-jms-client</artifactId>
+				<version>${artemis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>artemis-core-client</artifactId>
+				<version>${artemis.version}</version>
+			</dependency>
+			<!-- 2017/08/29 add -->
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>artemis-commons</artifactId>
+				<version>${artemis.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>net.minidev</groupId>
+				<artifactId>json-smart</artifactId>
+				<version>2.4.10</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.webjars</groupId>
+				<artifactId>webjars-locator</artifactId>
+				<version>0.46</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.fasterxml.jackson.core</groupId>
+						<artifactId>jackson-databind</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.14.2</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>9.0.4</version>
+			</dependency>
+
+			<!-- 2022/07/12 fix Remote Code Execution -->
+			<!-- <dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>2.1.214</version>
+				<scope>test</scope>
+			</dependency> -->
+			<!-- 2022/07/12 fix Remote Code Execution -->
+			<!-- <dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>5.3.21</version>
+			</dependency> -->
+			<!-- 2022/07/12 fix Access Control Bypass -->
+			<!-- <dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>8.0.29</version>
+			</dependency> -->
+			<!-- 2022/07/12 fix XSS & ReDoS -->
+			<!-- <dependency>
+				<groupId>org.webjars</groupId>
+				<artifactId>highcharts</artifactId>
+				<version>9.3.2</version>
+			</dependency> -->
+			<!-- 2022/07/12 fix Improper Input Validation -->
+			<!-- <dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>5.3.21</version>
+			</dependency> -->
+			<!-- 2022/07/12 fix Deserialization of Untrusted Data -->
+			<!-- <dependency>
+				<groupId>com.hazelcast</groupId>
+				<artifactId>hazelcast-client</artifactId>
+				<version>3.12.12</version>
+			</dependency> -->
+			<!-- 2022/07/12 fix Deserialization of Untrusted Data -->
+			<!-- <dependency>
+				<groupId>com.hazelcast</groupId>
+				<artifactId>hazelcast-spring</artifactId>
+				<version>5.1.2</version>
+			</dependency> -->
+			<!-- 2022/07/12 fix Improper Input Validation -->
+			<!-- <dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jsr310</artifactId>
+				<version>2.13.3</version>
+			</dependency> -->
+			<!-- 2022/07/12 fix XSS -->
+			<!-- <dependency>
+				<groupId>org.webjars</groupId>
+				<artifactId>bootstrap</artifactId>
+				<version>5.1.3</version>
+			</dependency> -->
+			<!-- 2022/07/12 fix XSS -->
+			<!-- <dependency>
+				<groupId>org.webjars</groupId>
+				<artifactId>jquery</artifactId>
+				<version>3.6.0</version>
+			</dependency>
+			<dependency>
+				<groupId>io.github.anand1st</groupId>
+				<artifactId>sshd-shell-spring-boot-starter</artifactId>
+				<version>4.2</version>
+			</dependency> -->
+			<!-- Should managed in SuperParent -->
+			<!-- 2022/07/12 fix Multipart Content Pollution -->
+			<!-- <dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>5.3.21</version>
+			</dependency> -->
+			<!-- 2022/07/12 fix Deserialization of Untrusted Data -->
+			<!-- <dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>31.1-jre</version>
+			</dependency> -->
+			<!-- 2022/07/12 fix Directory Traversal -->
+			<!-- <dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.11.0</version>
+			</dependency> -->
+			<!-- 2022/07/12 fix Improper Handling of Case Sensitivity -->
+			<!-- <dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>5.3.21</version>
+			</dependency> -->
+
+		</dependencies>
+	</dependencyManagement>
+	<properties>
+		<!-- Other project properties -->
+		<surefire.skip>true</surefire.skip>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<!-- Application modules version -->
+		<wisemc.version>2.1.0-SNAPSHOT</wisemc.version>
+		<wiselcs.version>1.1.3-SNAPSHOT</wiselcs.version>
+		<ws.mongo.version>1.1.13</ws.mongo.version>
+		<ws.common.version>1.5.10-SNAPSHOT</ws.common.version>
+		<ws.mongo.version>1.1.13</ws.mongo.version>
+		<ws.hbm.version>2.0.0-SNAPSHOT</ws.hbm.version>
+		<ws.jmx.version>1.0.2</ws.jmx.version>
+		<ws.smppclient.version>1.0.1-SNAPSHOT</ws.smppclient.version>
+		<ws.ui.version>2.7.0-SNAPSHOT</ws.ui.version>
+		<hazelcast.version>3.12.13</hazelcast.version>
+		<artemis.version>2.28.0</artemis.version>
+		<!-- java compile / runtime version -->
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+	</properties>
+
+</project>

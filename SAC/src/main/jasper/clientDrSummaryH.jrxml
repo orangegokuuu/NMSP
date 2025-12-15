@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="clientMtSummary" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4eedbb89-b4f6-4469-9ab6-f642a1688cf7">
+	<property name="template.engine" value="tabular_template"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MSP"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<style name="Title" forecolor="#FFFFFF" fontName="DejaVu Sans" fontSize="50" isBold="false" pdfFontName="DejaVu Sans"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="DejaVu Sans" fontSize="18" isBold="false" pdfFontName="DejaVu Sans"/>
+	<style name="Column header" mode="Opaque" forecolor="#000000" backcolor="#D9D9D9" fontName="DejaVu Sans" fontSize="14" isBold="true" pdfFontName="DejaVu Sans"/>
+	<style name="Detail" mode="Transparent" fontName="DejaVu Sans" pdfFontName="DejaVu Sans"/>
+	<style name="Row" mode="Transparent" fontName="DejaVu Sans" pdfFontName="DejaVu Sans">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#EEEFF0"/>
+		</conditionalStyle>
+	</style>
+	<style name="Table" fontName="DejaVu Sans">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+			<topPen lineWidth="1.0" lineColor="#000000"/>
+			<leftPen lineWidth="1.0" lineColor="#000000"/>
+			<bottomPen lineWidth="1.0" lineColor="#000000"/>
+			<rightPen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="sDate" class="java.util.Date">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="eDate" class="java.util.Date">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="reportType" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Client Traffic DR Daily Summary"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sysId" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA["ALL"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sourceId" class="java.lang.String">
+		<defaultValueExpression><![CDATA["ALL"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="selectedCriteria" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA["1 SysId and 1 SourceID"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="selectionType" class="java.lang.String">
+		<defaultValueExpression><![CDATA["121"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT  trunc(s1.ACCEPT_DATE , 'HH24') as ad,   to_char(s1.ACCEPT_DATE , 'HH24') as hours,
+SUM(CASE WHEN s2.DELIVER_STATUS like 'DELIVRD%' or s2.DELIVER_STATUS like 'ACCEPTD%' THEN 1 ELSE 0 END) as success, 
+SUM(CASE WHEN s2.DELIVER_STATUS like 'ENROUTE%' or s2.DELIVER_STATUS like 'EXPIRED%' or s2.DELIVER_STATUS like 'DELETED%' or s2.DELIVER_STATUS 
+	like 'UNDELIV%' or s2.DELIVER_STATUS like 'REJECTD%' or s2.DELIVER_STATUS like 'UNKNOWN%' OR s2.DELIVER_STATUS IS NULL THEN 1 ELSE 0 END
+) as failure, 
+SUM(CASE WHEN s2.DELIVER_STATUS IS NOT NULL OR s2.DELIVER_STATUS IS NULL THEN 1 ELSE 0 END) as total
+from SMS_RECORD s1
+left JOIN SMS_RECORD_SUB s2
+   ON s1.WS_MSG_ID = s2.WS_MSG_ID
+WHERE  s1.DR_FLAG = 1 AND (($P{selectionType}='121' AND  s1.SYS_ID = $P{sysId} AND s1.OA = $P{sourceId} ) 
+OR ($P{selectionType}='12A'AND  s1.SYS_ID = $P{sysId} ) 
+OR ($P{selectionType}='A2N' ) )
+GROUP BY  trunc(s1.ACCEPT_DATE , 'HH24'),   to_char(s1.ACCEPT_DATE , 'HH24')
+HAVING trunc(s1.ACCEPT_DATE , 'HH24')
+BETWEEN  $P{sDate} AND $P{eDate}  + 0.999988426 
+ORDER BY ad]]>
+	</queryString>
+	<field name="AD" class="java.util.Date"/>
+	<field name="HOURS" class="java.lang.String"/>
+	<field name="SUCCESS" class="java.math.BigDecimal"/>
+	<field name="FAILURE" class="java.math.BigDecimal"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<title>
+		<band height="61" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="0" y="25" width="205" height="15" uuid="c226e44d-3bb5-4145-b0b3-903bf1d79fde"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="12"/>
+				</textElement>
+				<text><![CDATA[Selection Criteria:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="0" width="210" height="25" uuid="14d86b79-a2c6-416f-8bce-6593bf85341e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="19" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Hourly Summary"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="40" width="205" height="15" uuid="1e01c648-d057-4d1f-a806-51a0c32dd4cd"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{selectedCriteria}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-1" y="60" width="556" height="1" uuid="806ce5df-1219-4876-ae0c-ca7405b1f246">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="125">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="0" y="10" width="180" height="25" uuid="57aed2b1-4f4e-40a3-a6ad-54dae8dd4c5a">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="DejaVu Sans" size="19" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Usage Report]]></text>
+			</staticText>
+			<frame>
+				<reportElement x="0" y="37" width="440" height="75" uuid="bd176dba-f439-4cd5-998a-d4c08dfdaa03">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<staticText>
+					<reportElement style="Column header" x="0" y="0" width="150" height="15" uuid="33274f5d-5b7e-4be2-a2ff-65d452a618ed"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font size="12"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Start Date	
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="0" y="15" width="150" height="15" uuid="1d3045ed-03d6-4253-a959-aeeb491b73ca"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font size="12"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[End Date
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="0" y="30" width="150" height="15" uuid="235bf8b6-1e1e-49c7-b59f-7a46c30b8209"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font size="12"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[SysId]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="0" y="45" width="150" height="15" uuid="665f25c2-8663-4951-b699-1ab863bdeb76"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font size="12"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[SourceID]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="0" y="60" width="150" height="15" uuid="f30d490b-c8aa-4244-9176-f5fceb4ad56e"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font size="12"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Report Type]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="150" y="0" width="290" height="15" uuid="948cca40-abf7-4d5e-962c-ebda7e593aa5"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+						<paragraph lineSpacingSize="0.0" leftIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("yyyy/MM/dd").format($P{sDate})]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="150" y="45" width="290" height="15" uuid="75b44dc0-fea9-4ad6-b25b-333a2d98d20a"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+						<paragraph lineSpacingSize="0.0" leftIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{sourceId}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="150" y="15" width="290" height="15" uuid="53deaef9-3ea2-4bde-b02b-66ff08677cc8"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+						<paragraph lineSpacingSize="0.0" leftIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("yyyy/MM/dd").format($P{eDate})]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="150" y="30" width="290" height="15" uuid="cf7a50ba-944f-4fe2-9424-bb7cdd9b668e"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+						<paragraph lineSpacingSize="0.0" leftIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{sysId}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="150" y="60" width="290" height="15" uuid="d585647c-66d1-4741-b2f3-9b24cea18e68"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement>
+						<font fontName="DejaVu Sans" size="12"/>
+						<paragraph lineSpacingSize="0.0" leftIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{reportType}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="60">
+			<staticText>
+				<reportElement key="" style="Column header" x="381" y="30" width="85" height="30" forecolor="#000000" uuid="63ec9dfb-8f32-4b89-a2a6-aac2958187b7"/>
+				<box leftPadding="0">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="" style="Column header" x="210" y="0" width="256" height="30" forecolor="#000000" uuid="bdee3873-ed89-485a-ab0e-51f2d89877dc"/>
+				<box leftPadding="0">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DR-SMS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="" style="Column header" x="296" y="30" width="85" height="30" forecolor="#000000" uuid="15b02784-760a-404b-884d-35fcf4ac764b"/>
+				<box leftPadding="0">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Failure]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="" style="Column header" x="0" y="0" width="114" height="60" forecolor="#000000" uuid="81bbfe67-94f1-48a4-b5aa-976ab4fd47ae"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="" style="Column header" x="114" y="0" width="96" height="60" forecolor="#000000" uuid="2999a3b5-712f-4ba0-a34d-6d962add5b65"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hour]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="" style="Column header" x="210" y="30" width="86" height="30" forecolor="#000000" uuid="6cbea550-e57c-4bef-9472-ec7cd3d34eaa"/>
+				<box leftPadding="0">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Success]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30">
+			<textField>
+				<reportElement style="Detail" x="114" y="0" width="96" height="30" uuid="6431e84b-21e0-443d-8dc2-b01c0625bc6a"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="14"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{HOURS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="210" y="0" width="86" height="30" uuid="ce8d63d2-e599-4a64-bf6b-69cf6f11f67b"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="14"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUCCESS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="296" y="0" width="85" height="30" uuid="c1490128-e74a-46ab-9dda-6fc4caa13ec3"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="14"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FAILURE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="0" y="0" width="114" height="30" uuid="23cf0a0d-e96d-4a6d-b992-a782e1f8d532"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="14"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("yyyy/MM/dd").format($F{AD})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="381" y="0" width="85" height="30" uuid="6587874e-1c71-4c1a-bce4-ca138490755d"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="14"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TOTAL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="70">
+			<textField>
+				<reportElement x="400" y="30" width="100" height="30" uuid="277fa3e4-8ded-4b5b-95a1-893f28498139"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="500" y="30" width="100" height="30" uuid="c41fd6fb-fa71-4130-9492-d990d70b6793"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

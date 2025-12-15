@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ws.fet</groupId>
+		<artifactId>msp</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+	</parent>
+	<groupId>com.ws.fet.msp</groupId>
+	<artifactId>Tester</artifactId>
+	<name>Tester</name>
+	<description>WiseSpot SHS Tester</description>
+	<packaging>jar</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Compile -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.yaml</groupId>
+					<artifactId>snakeyaml</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Enable SSH Endpoint -->
+		<!-- <dependency>
+			<groupId>io.github.anand1st</groupId>
+			<artifactId>sshd-shell-spring-boot-starter</artifactId>
+			<scope>compile</scope>
+		</dependency> -->
+
+		<dependency>
+			<groupId>com.ws.fet.msp</groupId>
+			<artifactId>Common</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+		</dependency>
+
+		<!-- Database section -->
+		<!-- 	<dependency>
+			<groupId>com.ws.fet.msp</groupId>
+			<artifactId>DAL</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		 -->
+		<!-- 
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		 -->
+		<!-- Database section -->
+
+		<!-- <dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast-client</artifactId>
+		</dependency> -->
+
+		<!-- Test -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.yaml</groupId>
+					<artifactId>snakeyaml</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- 20230328 YC Added-->
+		<dependency>
+			<groupId>com.ws</groupId>
+			<artifactId>SmppClient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<properties>
+		<skip.test>true</skip.test>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
+</project>

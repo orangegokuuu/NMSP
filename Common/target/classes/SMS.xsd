@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="SMS">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="SysId" />
+				<xs:element name="Message">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="1" maxOccurs="100" name="Target" />
+							<xs:element name="Source" />
+							<xs:element name="Text" />
+							<xs:element name="Language" />
+							<xs:element name="DrFlag" />
+							<xs:element name="ValidType" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

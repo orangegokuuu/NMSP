@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="QueryDR">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="SysId" />
+				<xs:element name="MessageId" />
+				<xs:element name="BNumber" />
+				<xs:element name="Type" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

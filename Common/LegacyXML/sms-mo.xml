@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SmsMO>
+    <Message>
+        <Target>01999991201703400000</Target>
+        <Source>886955227034</Source>
+        <Language>E</Language>
+        <Text>This is a normal MO.</Text>
+    </Message>
+    <Message>
+        <Target>01999991201703400000</Target>
+        <Source token="test">886955227034</Source>
+        <Language>E</Language>
+        <Text>This is a MT.</Text>
+        <DeliveryReport>
+            <Id>0010571053</Id>
+            <SubmitDate>0304141835</SubmitDate>
+            <DoneDate>0304151837</DoneDate>
+            <State>DELIVRD</State>
+            <Error>060</Error>
+        </DeliveryReport>
+    </Message>
+</SmsMO>

@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ws.fet</groupId>
+		<artifactId>msp</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+	</parent>
+	<groupId>com.ws.fet.msp</groupId>
+	<artifactId>DAL</artifactId>
+	<name>DAL</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ws.fet.msp</groupId>
+			<artifactId>Common</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<!-- SpringFramework -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
+		</dependency>
+		<!-- Compile -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-artemis</artifactId>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.yaml</groupId>
+					<artifactId>snakeyaml</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>artemis-jms-client</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>artemis-core-client</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<!-- 2017/08/29 add -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>artemis-commons</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast-client</artifactId>
+		</dependency>
+		<!--
+			<dependency>
+			<groupId>com.ws</groupId>
+			<artifactId>HibernateSupport</artifactId>
+			<scope>compile</scope>
+			</dependency>
+		
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast-hibernate5</artifactId>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.hazelcast</groupId>
+					<artifactId>hazelcast</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		-->
+		<!-- DB -->
+		<!-- <dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<scope>compile</scope>
+		</dependency> -->
+		<!-- <dependency>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc10</artifactId>
+			<version>19.18.0.0</version>
+		</dependency> -->
+		<dependency>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc11</artifactId>
+			<version>21.5.0.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.ws.mc</groupId>
+			<artifactId>WiseMC</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<!--
+			<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<scope>compile</scope>
+			</dependency>
+			<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+			</dependency>
+		-->
+		<!-- Compile -->
+
+		<!-- Test -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<skip.test>true</skip.test>
+	</properties>
+</project>

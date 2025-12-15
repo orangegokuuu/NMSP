@@ -1,0 +1,177 @@
+<ol class="breadcrumb">
+	<li><a ui-sref="main"><i class="fa fa-home fa-fw"></i><span
+			translate>menu.home</span></a></li>
+	<li class="active"><i class="fa fa-envelope fa-fw"></i><span
+		translate>PT.SMS_SERVICE</span></li>
+	<li class="active"><i class="fa fa-calendar fa-fw"></i><span translate>P.SMS_SERVICE_05</span></li>
+</ol>
+
+<div ng-controller="Sms.TimetableCtrl">
+  <div class="panel panel-primary">
+	<div class="panel-heading" layout="row"
+		layout-align="space-between center">
+		<span translate>sms.tt.msg.01</span>
+		<div class="btn-cp">
+			<button id="refreshBtn" class="btn btn-xs btn-primary "
+				ng-click="refreshGrid()">
+				<i class="fa fa-refresh fa-fw"></i>
+				<md-tooltip>{{'msg.refresh' | translate}}</md-tooltip>
+			</button>
+			<button id="addBtn" class="btn btn-xs btn-primary "
+				ng-click="showCreateForm()" privilege="SMS_SERVICE_05:write">
+				<i class="fa fa-plus-square fa-fw"></i>
+				<md-tooltip>{{'msg.add' | translate}}</md-tooltip>
+			</button>
+			<button id="editBtn" class="btn btn-xs btn-primary"
+				ng-click="showUpdateForm()" ng-disabled="enableEdit!=true"
+				privilege="SMS_SERVICE_05:write">
+				<i class="fa fa-pencil-square fa-fw"></i>
+				<md-tooltip>{{'msg.modify' | translate}}</md-tooltip>
+			</button>
+		</div>
+	</div>
+
+	<div ag-grid="grid" style="height: 400px; width: 99.9%;"
+		class="ag-fresh"></div>
+
+  <!-- Create Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="CreateDialog">
+    <md-dialog class="pad10">
+      <form name="CreateForm" ng-submit="create(timetable)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" translate>sms.tt.msg.04</h4>
+        </div>
+        <div class="modal-body">
+          <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+          
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-users fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'sms.tt.field.01' | translate}}" name="timeTableId"
+                ng-model="timetable.timeTableId" ng-required="true" ng-maxlength="30" autocomplete="false"/>
+            </div>
+          </div>
+          <div class="alert alert-danger" ng-show="CreateForm.timeTableId.$dirty && CreateForm.timeTableId.$error.required" translate>sms.tt.err.05</div>
+          <div class="alert alert-danger" ng-show="CreateForm.timeTableId.$dirty && CreateForm.timeTableId.$error.maxlength" translate>sms.tt.err.06</div>
+    
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'sms.tt.field.02' | translate}}" name="timeTableName"
+                ng-model="timetable.timeTableName" ng-required="true" ng-maxlength="200" />
+            </div>    
+          </div>
+		  <div class="alert alert-danger" ng-show="CreateForm.timeTableName.$dirty && CreateForm.timeTableName.$error.required" translate>sms.tt.err.05</div>
+          <div class="alert alert-danger" ng-show="CreateForm.timeTableName.$dirty && CreateForm.timeTableName.$error.maxlength" translate>sms.tt.err.06</div>
+          
+		 <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-check-square-o fa-fw"></i></span>
+              <select class="form-control" ng-model="defValue" name="defValue" required>
+                <option ng-selected="defValue == status.value" ng-repeat="status in onOffFilter" ng-value="status.value">{{status.label}}</option>
+              </select>
+              <md-tooltip>{{'sms.tt.onOff'|translate}}</md-tooltip>
+            </div>  
+         </div>
+          
+          
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" ng-disabled="CreateForm.$invalid">Save changes</button>
+        </div>
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+
+
+	<!-- Update Form -->
+	<div style="visibility: hidden">
+		<div class="md-dialog-container" id="UpdateDialog">
+			<md-dialog class="pad10">
+			
+			<form name="UpdateForm" ng-submit="update(timetable)" autocomplete="false">
+				<div class="modal-header">
+					<button type="button" class="close" ng-click="closeDialog()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" translate>sms.tt.msg.05</h4>
+				</div>
+						
+				<div class="modal-body">	
+				<div ng-if="Error != null" class="alert alert-danger">{{ Error | translate}}</div>
+				<div  layout="column">
+				
+					<div id="left" class="panel panel-primary">
+						<div class="panel-heading" translate>sms.tt.msg.01</div>
+						<md-content flex layout-gt-sm="row" layout="column" class="pad10">
+					
+ 
+				          <div class="form-group input-small-narrow pad10 input-margin-top">
+				            <div class="input-group">
+				              <span class="input-group-addon"><i class="fa fa-users fa-fw"></i></span>
+				              <input type="text" class="form-control" placeholder="{{'sms.tt.field.01' | translate}}" name="timeTableId"
+				                ng-model="timetable.timeTableId" ng-required="true" ng-maxlength="30" ng-disabled="true"/>
+				            </div>
+       				          <div class="alert alert-danger margin-b-0" ng-show="UpdateForm.timeTableId.$dirty && UpdateForm.timeTableId.$error.required" translate>sms.tt.err.05</div>
+				         	  <div class="alert alert-danger margin-b-0" ng-show="UpdateForm.timeTableId.$dirty && UpdateForm.timeTableId.$error.maxlength" translate>sms.tt.err.06</div>
+				          </div>
+
+				    
+				          <div class="form-group input-small-narrow pad10 input-margin-top">
+				            <div class="input-group">
+				              <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+				              <input type="text" class="form-control" placeholder="{{'sms.tt.field.02' | translate}}" name="timeTableName"
+				                ng-model="timetable.timeTableName" ng-required="true" ng-maxlength="200" />
+				            </div>    
+				            <div class="alert alert-danger margin-b-0" ng-show="UpdateForm.timeTableName.$dirty && UpdateForm.timeTableName.$error.required" translate>sms.tt.err.05</div>
+			                <div class="alert alert-danger margin-b-0" ng-show="UpdateForm.timeTableName.$dirty && UpdateForm.timeTableName.$error.maxlength" translate>sms.tt.err.06</div>
+				          </div>
+				
+				       
+					
+						 <div class="form-group input-small-narrow pad10 input-margin-top">
+				            <div class="input-group">
+				              <span class="input-group-addon"><i class="fa fa-power-off fa-fw"></i></span>
+				              <select class="form-control" ng-model="timetable.status" name="status" required>
+				                <option ng-selected="timetable.status == status.value" ng-repeat="status in statusFilter" ng-value="status.value">{{status.label}}</option>
+				              </select>
+				            </div>  
+				         </div>
+				        
+						</md-content>
+					</div>
+
+					<div id="middle" class="pad10"  hide-sm hide-xs style="min-width:745px"></div>
+
+					<div id="right" class="panel panel-primary" style="width:99.9%;">
+						<div class="panel-heading" translate>sms.tt.msg.00</div>
+						<div ag-grid="ttGrid" class="ag-fresh" style="height: 400px; width: 99.9%;"></div>
+					</div>
+				</div>
+				</div>
+				<div class="modal-footer">
+					<div style="float: left;">
+						<button type="button" class="btn btn-danger"
+							ng-click="confirmDelete(timetable)" translate>msg.del</button>
+					</div>
+					<div style="float: right;">
+						<button type="submit" class="btn btn-primary"
+							ng-disabled="UpdateForm.$invalid" translate>msg.save</button>
+					</div>
+				</div>
+
+				</md-dialog-content>
+				
+			</form>
+			</md-dialog>
+		</div>
+	</div>
+	
+ </div>
+  
+</div>

@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ws.fet</groupId>
+		<artifactId>msp</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>IBMMQClient</artifactId>
+	<groupId>com.ws.fet.msp</groupId>
+
+	<dependencies>
+		<!-- Compile -->
+		<dependency>
+			<groupId>com.ws.fet.msp</groupId>
+			<artifactId>Common</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ws.fet.msp</groupId>
+			<artifactId>DAL</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<!-- Spring Boot dependency -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Enable SSH Endpoint -->
+		<!-- <dependency>
+			<groupId>io.github.anand1st</groupId>
+			<artifactId>sshd-shell-spring-boot-starter</artifactId>
+			<scope>compile</scope>
+		</dependency> -->
+		<!-- Enable HTTP Endpoint -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.ibm.mq/com.ibm.mq.allclient -->
+		<dependency>
+			<groupId>com.ibm.mq</groupId>
+			<artifactId>com.ibm.mq.allclient</artifactId>
+			<version>0.0.0.3</version>
+		</dependency>
+
+		<!-- Runtime -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-jul</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- Test -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
+			</plugin>
+
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
+	<properties>
+		<skip.test>true</skip.test>
+	</properties>
+</project>

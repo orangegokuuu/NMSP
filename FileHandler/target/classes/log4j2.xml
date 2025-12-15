@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%-5level %d{HH:mm:ss.SSS} [%-50logger{1.}] - %msg%n" />
+		</Console>
+		
+		<RollingFile name="FileHandlerLog" fileName="${LOG_PATH}/fileHandler.log"
+			filePattern="${LOG_PATH}/fileHandler.log_%d{yyyyMMdd}">
+			<PatternLayout
+				pattern="%-5p %d{yyyyMMdd HH:mm:ss.SSS} [%-40c{1.}].[%-20M]:%-5L - %msg%n" />
+			<TimeBasedTriggeringPolicy />
+		</RollingFile>
+		
+		<RollingFile name="Sms" fileName="${SMS_LOG_PATH}/fileHandler.log"
+			filePattern="${SMS_LOG_PATH}/fileHandler.log_%d{yyyyMMdd}">
+			<PatternLayout
+				pattern="%-5p %d{yyyyMMdd HH:mm:ss.SSS} [%-40c{1.}].[%-20M]:%-5L - %msg%n" />
+			<TimeBasedTriggeringPolicy />
+		</RollingFile>
+		
+		<RollingFile name="BlackList" fileName="${BL_LOG_PATH}/fileHandler.log"
+			filePattern="${BL_LOG_PATH}/fileHandler.log_%d{yyyyMMdd}">
+			<PatternLayout
+				pattern="%-5p %d{yyyyMMdd HH:mm:ss.SSS} [%-40c{1.}].[%-20M]:%-5L - %msg%n" />
+			<TimeBasedTriggeringPolicy />
+		</RollingFile>
+		
+		<RollingFile name="SpamKeyWord" fileName="${KEYWORD_LOG_PATH}/fileHandler.log"
+			filePattern="${KEYWORD_LOG_PATH}/fileHandler.log_%d{yyyyMMdd}">
+			<PatternLayout
+				pattern="%-5p %d{yyyyMMdd HH:mm:ss.SSS} [%-40c{1.}].[%-20M]:%-5L - %msg%n" />
+			<TimeBasedTriggeringPolicy />
+		</RollingFile>
+		<RollingFile name="Mnp" fileName="${MNP_LOG_PATH}/fileHandler.log"
+			filePattern="${MNP_LOG_PATH}/fileHandler.log_%d{yyyyMMdd}">
+			<PatternLayout
+				pattern="%-5p %d{yyyyMMdd HH:mm:ss.SSS} [%-40c{1.}].[%-20M]:%-5L - %msg%n" />
+			<TimeBasedTriggeringPolicy />
+		</RollingFile>
+		 
+	</Appenders>
+	<Loggers>
+		<Root level="DEBUG">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="FileHandlerLog" /> 
+		</Root>
+		<Logger name="org.springframework" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.jgroups" level="error" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.infinispan" level="error" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="com.mchange" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.hibernate" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.crsh" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.apache.tomcat" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.apache.catalina" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+
+		<!-- used for monitor sms queue count -->
+		<Logger name="com.ws.msp.file.logger.QueueLogger" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="FileHandlerLog" />
+		</Logger>
+		<Logger name="com.ws.msp.file.logger.MonitDocLogger" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="FileHandlerLog" />
+		</Logger>
+		
+		<Logger name="com.ws.msp.file.controller.SmsFileHandlerController" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="Sms" />
+			<AppenderRef ref="FileHandlerLog" />
+		</Logger>
+		
+		<Logger name="com.ws.msp.file.controller.BlackListFileHandlerController" level="DEBUG" additivity="false">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="BlackList" />
+			<AppenderRef ref="FileHandlerLog" />
+		</Logger>
+		
+		<Logger name="com.ws.msp.file.controller.SpamFileHandlerController" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="SpamKeyWord" />
+			<AppenderRef ref="FileHandlerLog" />
+		</Logger>
+		<Logger name="com.ws.msp.file.controller.MnpFileHandlerController" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="Mnp" />
+			<AppenderRef ref="FileHandlerLog" />
+		</Logger>
+
+		<!-- depress root scan -->
+		<Logger name="com.ws.msp.file.util.FileWatcher" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="Mnp" />
+			<AppenderRef ref="FileHandlerLog" />
+		</Logger>
+		
+	</Loggers>
+</Configuration>
+

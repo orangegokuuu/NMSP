@@ -1,0 +1,234 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="main"><i class="fa fa-home fa-fw"></i><span translate>menu.home</span></a></li>
+  <li class="active"><i class="fa fa-user-o fa-fw"></i><span translate>PT.USER</span></li>
+  <li class="active"><i class="fa fa-id-card fa-fw"></i><span translate>P.USER_02</span></li>
+</ol>
+
+<div class="panel panel-primary" ng-controller="User.RoleCtrl">
+  <div class="panel-heading" layout="row" layout-align="space-between center">
+    <span>Administrators</span>
+    <div class="btn-group">
+      <button id="refreshBtn" class="btn btn-xs btn-primary " ng-click="refreshGrid()">
+        <i class="fa fa-refresh fa-fw"></i>
+        <md-tooltip>{{'msg.refresh' | translate}}</md-tooltip>
+      </button>
+      <button id="addBtn" class="btn btn-xs btn-primary " ng-click="showCreateForm()" privilege="USER_02:write">
+        <i class="fa fa-plus-square fa-fw"></i>
+        <md-tooltip>{{'msg.add' | translate}}</md-tooltip>
+      </button>
+      <button id="editBtn" class="btn btn-xs btn-primary" ng-click="showUpdateForm()"
+        ng-disabled="!enableEdit" privilege="USER_02:write">
+        <i class="fa fa-pencil-square fa-fw"></i>
+        <md-tooltip>{{'msg.modify' | translate}}</md-tooltip>
+      </button>
+    </div>
+  </div>
+  
+  <div ag-grid="grid" style="height: 300px; width: 99.9%;" class="ag-fresh"></div>
+
+  <!-- Create Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="CreateDialog">
+    <md-dialog class="pad10">
+      <form name="CreateForm" ng-submit="create(role)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Create New Role</h4>
+        </div>
+        <md-dialog-content layout="column">
+          <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+          <div layout-gt-sm="row" layout="column">
+            <div id="left" class="panel panel-primary" style="min-height:150px;">
+              <div class="panel-heading" translate>user.role.msg.11</div>
+              <md-content flex layout="column" class="pad10">
+                <div hide-sm hide-xs class="alert alert-info" translate>user.role.msg.16</div>
+                <div class="form-group input-narrow">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-id-card fa-fw"></i></span> 
+                    <input type="text" class="form-control" placeholder="{{'user.role.msg.03' | translate}}" name="roleId"
+                      ng-model="role.roleId" ng-required="true"></input>
+					<md-tooltip>{{'user.role.msg.03' | translate}}</md-tooltip>
+                  </div>
+                </div>
+                <div class="alert alert-danger" ng-show="CreateForm.$dirty && CreateForm.roleId.$error.required" translate>user.role.err.01</div>
+                <div class="form-group input-narrow">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span> 
+                    <input type="text" class="form-control" placeholder="{{'user.role.msg.04' | translate}}" name="roleName"
+                      ng-model="role.roleName" ng-required="true"></input>
+                    <md-tooltip>{{'user.role.msg.04' | translate}}</md-tooltip>
+                  </div>
+                </div>
+                <div class="alert alert-danger" ng-show="CreateForm.$dirty && CreateForm.roleName.$error.required" translate>user.role.err.06</div>
+                <div class="form-group input-narrow">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-clock-o fa-fw"></i></span> 
+                    <input type="number" class="form-control" placeholder="{{'user.role.msg.15' | translate}}" name="passwordExpire"
+                      ng-model="role.passwordExpire" ng-required="true"></input>
+                    <md-tooltip>{{'user.role.msg.15' | translate}}</md-tooltip>
+                  </div>
+                </div>
+                <div class="alert alert-danger" ng-show="CreateForm.$dirty && CreateForm.passwordExpire.$error.required" translate>user.role.err.05</div>
+              </md-content>
+            </div>
+            <div id ="middle" hide-sm hide-xs class="pad10"></div>
+            <div id="right" class="panel panel-primary">
+              <div class="panel-heading" translate>user.role.msg.07</div>
+              <md-content flex layout="column" class="pad10">
+                <div hide-sm hide-xs class="alert alert-info" translate>user.role.msg.14</div>
+                <table class="table" >
+                  <tbody ng-repeat="type in privilegeType">
+                    <tr>
+                        <td>
+                            <i class="fa {{type.icon}} fa-fw"></i>
+                            <span hide-sm hide-xs>{{type.labels[locale].typeName}}</span>
+                            <md-tooltip>{{type.labels[locale].typeName}}</md-tooltip>
+                        </td>
+                        <td ng-show="{{$index == 0}}"><span class="label label-success" translate>user.role.msg.08</span></td>
+                        <td ng-show="{{$index == 0}}"><span class="label label-danger"  translate>user.role.msg.09</span></td>
+                        <td ng-show="{{$index == 0}}"><span class="label label-warning" translate>user.role.msg.10</span></td>
+                    </tr>
+                    <tr ng-repeat="p in type.privileges">
+                        <td><i class="fa {{p.icon}} fa-fw"></i>
+                            <span hide-sm hide-xs>{{p.labels[locale].privilegeName}}</span>
+                            <md-tooltip>{{p.labels[locale].privilegeName}}</md-tooltip>
+                        </td>
+                        <td>
+                            <md-checkbox ng-model="role.rmap[p.privilegeId].readEnable" 
+                                ng-disabled="{{!userSession.rights[p.privilegeId].readEnable || !p.readEnable}}" 
+                                aria-label="R"></md-checkbox>
+                        </td>
+                        <td>    
+                            <md-checkbox ng-model="role.rmap[p.privilegeId].writeEnable" 
+                                ng-disabled="{{!userSession.rights[p.privilegeId].writeEnable || !p.writeEnable}}" 
+                                aria-label="W"></md-checkbox>
+                        </td>
+                        <td>    
+                            <md-checkbox ng-model="role.rmap[p.privilegeId].otherEnable" 
+                                ng-disabled="{{!userSession.rights[p.privilegeId].writeEnable || !p.otherEnable}}" 
+                                aria-label="E"></md-checkbox>
+                        </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </md-content>
+            </div>
+          </div>
+        </md-dialog-content>  
+        <md-dialog-actions>
+          <button type="submit" class="btn btn-primary" ng-disabled="CreateForm.$invalid" translate>msg.save</button>
+        </md-dialog-actions>
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+  
+  <!-- Update Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="UpdateDialog">
+    <md-dialog class="pad10">
+      <form name="UpdateForm" ng-submit="update(role)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Update Role</h4>
+        </div>
+        <md-dialog-content layout="column">
+          <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+          <div layout-gt-sm="row" layout="column">
+            <div id="left" class="panel panel-primary" style="min-height:150px;">
+              <div class="panel-heading" translate>user.role.msg.11</div>
+              <md-content flex layout="column" class="pad10">
+                <div hide-sm hide-xs class="alert alert-info" translate>user.role.msg.16</div>
+                <div class="form-group input-narrow">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-id-card fa-fw"></i></span> 
+                    <input type="text"
+                      class="form-control" placeholder="{{'user.role.msg.03' | translate}}" name="roleId"
+                      ng-model="role.roleId" ng-required="true" ng-disabled="true"></input>
+                    <md-tooltip>{{'user.role.msg.03' | translate}}</md-tooltip>
+                  </div>
+                </div>
+                <div class="alert alert-danger" ng-show="UpdateForm.$dirty && UpdateForm.roleId.$error.required" translate>user.role.err.01</div>
+                <div class="form-group input-narrow">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span> 
+                    <input type="text"
+                      class="form-control" placeholder="{{'user.role.msg.04' | translate}}" name="roleName"
+                      ng-model="role.roleName" ng-required="true"></input>
+               		 <md-tooltip>{{'user.role.msg.04' | translate}}</md-tooltip>
+                  </div>
+                </div>
+                <div class="alert alert-danger" ng-show="UpdateForm.$dirty && UpdateForm.roleName.$error.required" translate>user.role.err.06</div>
+                <div class="form-group input-narrow">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-clock-o fa-fw"></i></span> 
+                    <input type="number"
+                      class="form-control" placeholder="{{'user.role.msg.15' | translate}}" name="passwordExpire"
+                      ng-model="role.passwordExpire" ng-required="true"></input>
+					<md-tooltip>{{'user.role.msg.15' | translate}}</md-tooltip>
+                  </div>
+                </div>
+                <div class="alert alert-danger" ng-show="UpdateForm.$dirty && UpdateForm.passwordExpire.$error.required" translate>user.role.err.05</div>
+             
+                
+                
+              </md-content>
+            </div>
+            <div id ="middle" hide-sm hide-xs class="pad10"></div>
+            <div id="right" class="panel panel-primary">
+              <div class="panel-heading" translate>user.role.msg.07</div>
+              <md-content flex layout="column" class="pad10">
+                <div hide-sm hide-xs class="alert alert-info" translate>user.role.msg.14</div>
+                <table class="table" >
+                  <tbody ng-repeat="type in privilegeType">
+                    <tr>
+                        <td>
+                            <i class="fa {{type.icon}} fa-fw"></i>
+                            <span hide-sm hide-xs>{{type.labels[locale].typeName}}</span>
+                            <md-tooltip>{{type.labels[locale].typeName}}</md-tooltip>
+                        </td>
+                        <td ng-show="{{$index == 0}}"><span class="label label-success" translate>user.role.msg.08</span></td>
+                        <td ng-show="{{$index == 0}}"><span class="label label-danger"  translate>user.role.msg.09</span></td>
+                        <td ng-show="{{$index == 0}}"><span class="label label-warning" translate>user.role.msg.10</span></td>
+                    </tr>
+                    <tr ng-repeat="p in type.privileges">
+                        <td><i class="fa {{p.icon}} fa-fw"></i>
+                            <span hide-sm hide-xs>{{p.labels[locale].privilegeName}}</span>
+                            <md-tooltip>{{p.labels[locale].privilegeName}}</md-tooltip>
+                        </td>
+                        <td>
+                            <md-checkbox ng-model="role.rmap[p.privilegeId].readEnable" 
+                                ng-disabled="{{!userSession.rights[p.privilegeId].readEnable || !p.readEnable}}" 
+                                aria-label="R"></md-checkbox>
+                        </td>
+                        <td>    
+                            <md-checkbox ng-model="role.rmap[p.privilegeId].writeEnable" 
+                                ng-disabled="{{!userSession.rights[p.privilegeId].writeEnable || !p.writeEnable}}" 
+                                aria-label="W"></md-checkbox>
+                        </td>
+                        <td>    
+                            <md-checkbox ng-model="role.rmap[p.privilegeId].otherEnable" 
+                                ng-disabled="{{!userSession.rights[p.privilegeId].writeEnable || !p.otherEnable}}" 
+                                aria-label="E"></md-checkbox>
+                        </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </md-content>
+            </div>
+          </div>
+        </md-dialog-content>  
+        <md-dialog-actions layout="row" layout-align="space-between center">
+            <button type="button" class="btn btn-danger" ng-click="confirmDelete(role)" translate>msg.del</button>
+            <button type="submit" class="btn btn-primary" ng-disabled="UpdateForm.$invalid" translate>msg.save</button>
+        </md-dialog-actions>
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+  
+</div>

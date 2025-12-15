@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!ELEMENT SmsMO ( Message+ ) >
+<!ELEMENT Message ( Target, Source, Language, Text, DeliveryReport? ) >
+<!ELEMENT Target ( #PCDATA ) >
+<!ELEMENT Source ( #PCDATA ) >
+<!ATTLIST Source token NMTOKEN #IMPLIED >
+<!ELEMENT Language ( #PCDATA ) >
+<!ELEMENT Text ( #PCDATA ) >
+<!ELEMENT DeliveryReport ( Id, SubmitDate, DoneDate, State, Error ) >
+<!ELEMENT Id ( #PCDATA ) >
+<!ELEMENT SubmitDate ( #PCDATA ) >
+<!ELEMENT DoneDate ( #PCDATA ) >
+<!ELEMENT State ( #PCDATA ) >
+<!ELEMENT Error ( #PCDATA ) >

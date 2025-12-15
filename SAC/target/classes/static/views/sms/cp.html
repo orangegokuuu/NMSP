@@ -1,0 +1,1298 @@
+<ol class="breadcrumb">
+	<li><a ui-sref="main"><i class="fa fa-home fa-fw"></i><span
+			translate>menu.home</span></a></li>
+	<li class="active"><i class="fa fa-envelope fa-fw"></i><span
+		translate>PT.SMS_SERVICE</span></li>
+	<li class="active"><i class="fa fa-address-card fa-fw"></i><span translate>P.SMS_SERVICE_01</span></li>
+</ol>
+
+<div ng-controller="Sms.CpCtrl">
+  <div class="panel panel-primary">
+	<div class="panel-heading" layout="row"
+		layout-align="space-between center">
+		<span translate>sms.cp.msg.05</span>
+		<div class="btn-cp">
+			<button id="refreshBtn" class="btn btn-xs btn-primary "
+				ng-click="refreshGrid()">
+				<i class="fa fa-refresh fa-fw"></i>
+				<md-tooltip>{{'msg.refresh' | translate}}</md-tooltip>
+			</button>
+			<button id="addBtn" class="btn btn-xs btn-primary "
+				ng-click="showCreateForm()" privilege="SMS_SERVICE_01:write">
+				<i class="fa fa-plus-square fa-fw"></i>
+				<md-tooltip>{{'msg.add' | translate}}</md-tooltip>
+			</button>
+			<button id="editBtn" class="btn btn-xs btn-primary"
+				ng-click="showUpdateForm()" ng-disabled="!enableEdit"
+				privilege="SMS_SERVICE_01:write">
+				<i class="fa fa-pencil-square fa-fw"></i>
+				<md-tooltip>{{'msg.modify' | translate}}</md-tooltip>
+			</button>
+		</div>
+	</div>
+
+	<div ag-grid="grid" style="height: 350px; width: 99.9%;"
+		class="ag-fresh"></div>
+
+	<!-- Create Form -->
+	<div style="visibility: hidden">
+		<div class="md-dialog-container" id="CreateDialog">
+			<md-dialog class="pad10">
+			
+			<form name="CreateForm" ng-submit="create(cp)" autocomplete="false">
+				<div class="modal-header">
+					<button type="button" class="close" ng-click="closeDialog()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" translate>sms.cp.msg.03</h4>
+				</div>
+						
+				<div class="modal-body" >	
+				<div ng-if="Error != null" class="alert alert-danger">{{ Error | translate}}</div>
+				<div layout-gt-sm="row" layout="column">
+				
+				<div id="left" class="panel panel-primary">
+					  <div class="panel-heading" layout="row">
+						<span  class="pad10" translate>sms.cp.msg.00</span>
+					  </div>
+					<div layout-gt-sm="row" layout="column">
+						<!-- CP Column 1 -->
+						<div id="leftleft">
+							<md-content flex layout="column" class="pad10 _md flex">
+								
+								<div class="form-group input-limited input-margin-top">
+					             <div class="input-group">
+					               <span class="input-group-addon input-group-addon-extend" ><div class="required"><label>{{'sms.cp.field.01' | translate}}</label></div></span> 
+									 <input  type="text" class="form-control"  
+							      name="cpId" ng-model="cp.cpId" ng-required="true" ng-maxlength="30" autocomplete="false"></input>
+					             </div>
+					             <div ng-messages="CreateForm.cpId.$error" ng-show="CreateForm.cpId.$dirty" >
+						            <div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.06</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						         </div>
+					            </div>
+		
+
+								<div class="form-group input-limited">
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend required"><label>{{'sms.cp.field.02' | translate}}</label></span> 
+								    <input  type="text" class="form-control" 
+							      name="cpName" ng-model="cp.cpName" ng-required="true" ng-maxlength="60"  required ></input>
+   								  </div>
+							      <div ng-messages="CreateForm.cpName.$error" ng-show="CreateForm.cpName.$dirty">
+						            <div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.06</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+								
+								<div class="form-group input-limited">
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend"><label>{{'sms.cp.field.03' | translate}}</label></span> 
+							        <input  type="text" class="form-control" 
+							        name="contactTel" ng-model="cp.contactTel" ng-maxlength="20"></input>
+							      </div>
+							        <div ng-messages="CreateForm.contactTel.$error" ng-show="CreateForm.contactTel.$dirty">
+						              <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						            </div>
+								</div>
+								
+								<div class="form-group input-limited">
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend"><label>{{'sms.cp.field.04' | translate}}</label></span> 
+								    <input  type="email" class="form-control" 
+							      name="contactEmail" ng-model="cp.contactEmail" ng-maxlength="255"></input>
+						          </div>
+							      <div ng-messages="CreateForm.contactEmail.$error" ng-show="CreateForm.contactEmail.$dirty">
+						            <div ng-message="email" class="alert alert-danger margin-b-0" translate>sms.cp.err.07</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+								  </div>
+								</div>
+					      		  
+								<div class="form-group input-limited">
+						            <div class="input-group input-limited">
+						              <span class="input-group-addon input-group-addon-extend"><div class="required">
+						              <label>{{'sms.cp.field.06' | translate}}</label></div></span>
+						              <select class="form-control input-form-border" ng-model="cp.cpType" name="cpType" ng-change="cpTypeChange(cp.cpType)" required>
+						                <option ng-selected="true" value= "">------------</option>
+						                <option ng-repeat="type in cpTypeFilter" ng-value="type.value">{{ type.label | translate}}</option>
+						              </select>
+						            </div>  
+						        </div>
+						        
+						        <!-- Priority -->
+  								<div class="form-group input-limited">
+						            <div class="input-group input-limited">
+						              <span class="input-group-addon input-group-addon-extend"><div class="required">
+						              <label>{{'sms.cp.field.32' | translate}}</label></div></span>
+						              <select class="form-control input-form-border" ng-model="cp.priority" name="priority" required>
+						                <option ng-repeat="priority in priorityList" ng-value="priority.value">{{ priority.label | translate}}</option>
+						              </select>
+						            </div>  
+						        </div>
+						        
+						        
+						        
+								<div class="form-group input-limited">
+						            <div class="input-group input-limited">
+						              <span class="input-group-addon input-group-addon-extend"><div class="required">
+						              <label>{{'sms.cp.field.11' | translate}}</label></div></span>
+						              <select class="form-control input-form-border" ng-model="cp.apiVersion" name="apiVersion" ng-disabled="cp.cpType == '2' " placeholder="{{'sms.cp.field.11' | translate}}" required>
+						                <option ng-selected="true" value= "">------------</option>
+						                <option  value= "1">MSP1</option>
+						                <option  value= "2">MSP2</option>
+						              </select>
+						            </div>  
+						        </div>
+
+
+						        
+							</md-content>
+						</div>
+						
+						<!-- CP Column 2 -->
+						<div id="leftright">
+							<md-content flex layout="column" class="pad10 _md flex">
+
+								<div class="form-group input-limited input-margin-top" >
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend"><div class="required">
+								    <label>{{'sms.cp.field.10' | translate}}</label></div></span> 
+								    <input  type="number" class="form-control" 
+							      name="smsLimit" ng-model="cp.smsLimit"  min="-1" max="2147483647" required ng-pattern="/^(0|\-?[1-9][0-9]*)$/"></input>
+   							      	<span class="input-group-addon">
+						             hour(s)
+							      	</span>
+						          </div>
+							      <div ng-messages="CreateForm.smsLimit.$error" ng-show="CreateForm.smsLimit.$dirty">
+						            <div ng-message="required || number || pattern" class="alert alert-danger margin-b-0" translate>sms.cp.err.08</div>
+						            <div ng-message="max" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+
+								<div class="form-group input-limited ">
+						            <div class="input-group">
+						            	<span class="input-group-addon input-group-addon-extend required input-header-checkbox-min-size"><label>{{'sms.cp.field.05' | translate}}</label></span>
+						            	<span class="input-group-addon">
+											<div class="btn-cp">
+												<button id="editSABtn" type="button" class="btn btn-xs "
+													ng-click="openUpdateSAForm()" privilege="SMS_SERVICE_01:write">
+													<i class="fa fa-pencil-square checkbox-width"></i>
+													<md-tooltip>{{'sms.cp.msg.10' | translate}}</md-tooltip>
+												</button>
+											</div>
+							            </span> 
+						            </div>  
+						        </div>
+						        
+   								<div class="form-group input-limited ">
+						            <div class="input-group">
+						            	<span class="input-group-addon input-group-addon-extend required input-header-checkbox-min-size"><label>{{'sms.cp.field.43' | translate}}</label></span>
+						            	<span class="input-group-addon">
+											<div class="btn-cp">
+												<button id="editDABtn" type="button" class="btn btn-xs "
+													ng-click="openUpdateDAForm()" privilege="SMS_SERVICE_01:write">
+													<i class="fa fa-pencil-square checkbox-width"></i>
+													<md-tooltip>{{'sms.cp.msg.12' | translate}}</md-tooltip>
+												</button>
+											</div>
+							            </span> 
+						            </div>  
+						        </div>
+						        
+								<div class="form-group input-limited">
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.08' | translate}}</label></span>
+						              <span class="input-group-addon"> 
+							          <md-checkbox ng-model="cp.spamCheckFl" name="spamCheckFl" class="checkbox-width" aria-label="spamCheckFl"></md-checkbox>
+							        </span> 
+						            </div>  
+						        </div>
+								
+								<div class="form-group input-limited">
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.09' | translate}}</label></span>
+						               <span class="input-group-addon"> 
+							          <md-checkbox ng-model="cp.blacklistCheckFl" name="blacklistCheckFl" class="checkbox-width" aria-label="blacklistCheckFl"></md-checkbox>
+							        </span> 
+						            </div>   
+						        </div>
+					  			
+					  			<!-- DR Request -->
+								<div ng-if="cp.cpType != '2'" class="form-group input-limited" >
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.30' | translate}}</label></span>
+						              <span class="input-group-addon"> 
+							          <md-checkbox ng-model="cp.drRequestFl" name="drRequestFl" class="checkbox-width" aria-label="drRequestFl"></md-checkbox>
+							        </span> 
+						            </div>   
+						        </div>				
+						        		        
+   								<div class="form-group input-limited">
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.33' | translate}}</label></span>
+						              <span class="input-group-addon"> 
+							          <md-checkbox ng-model="cp.throughPSA" name="throughPSA" class="checkbox-width" aria-label="throughPSA"></md-checkbox>
+							        </span> 
+						            </div>   
+						        </div>
+						        
+							</md-content>
+						</div>
+					</div>
+					</div>
+					<span class="pad10"></span>
+					
+					<!-- HTTP Detail -->
+					<div id="middle"  class="panel panel-primary dialog-http-detail-min-width" ng-if="cp.cpType == '1'">
+						<div class="panel-heading" translate>sms.cp.msg.07</div>
+						<div>				
+							<md-content flex layout="column" class="pad10 _md flex" >
+
+								<div class="form-group input-medium input-margin-top">
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-min-size-small"><div class="required">
+						              <label>{{'sms.cp.field.31' | translate}}</label></div></span>
+						              <select class="form-control input-form-border" ng-model="cp.cpZone" name="cpZone" required>
+						                <option ng-repeat="zone in cpZoneSet" ng-value="zone.value">{{ zone.label | translate}}</option>
+						              </select>
+						            </div>  
+						        </div>
+
+								<div class="form-group input-medium">
+									<div class="input-group input-medium">
+									<span class="input-group-addon input-group-addon-extend required input-header-min-size-small"><label class="required">{{'sms.cp.field.13' | translate}}</label></span> 
+									<md-autocomplete style="min-width: 150px;"
+							            md-input-name="cpTimeTable"
+							            md-selected-item="selectedTimetable"
+							            md-search-text-change="searchTextChange()"
+							            md-search-text="cp.timeTableId"
+							            md-selected-item-change="selectedItemChange(item)"
+							            md-items="item in querySearch(cp.timeTableId)"
+							            md-item-text="item.timeTableId"
+							            md-min-length="0"
+							            md-input-maxlength="100"
+							            placeholder="Timetable ID"
+							            md-no-cache="true"
+							            ng-init="searchText=cp.timeTableId"
+							            md-require-match="true"
+							            required>
+							          <md-item-template>
+							            <span class="item-title" md-highlight-text="searchText">{{item.timeTableId}}, </span>
+							            <span class="item-metadata">{{item.timeTableName}}</span>
+							          </md-item-template>
+							          <md-not-found>
+							            <span>{{searchText}}{{'sms.cp.err.13'|translate}}</span>
+							          </md-not-found>
+							        </md-autocomplete>
+							        </div>
+							          <div ng-messages="CreateForm.cpTimeTable.$error" ng-show="CreateForm.cpTimeTable.$dirty">
+  							            	<div ng-message="required" class="alert alert-danger margin-b-0"  translate>sms.cp.err.14</div>
+						            	<div ng-message="md-require-match" class="alert alert-danger margin-b-0" translate>sms.cp.err.12</div>
+						            	<div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          	  </div>
+								</div>
+
+								<div class="form-group input-medium" >
+								  <div class="input-group" >
+								    <span class="input-group-addon input-group-addon-extend input-header-min-size-small" >
+								    <div class="required"><label>{{'sms.cp.field.12' | translate}}</label></div></span> 
+								     <input  type="number" class="form-control"
+						      name="daLimit" ng-model="cp.daLimit" min="0" max="100" placeholder="1-100"  required ng-pattern="/^(0|\-?[1-9][0-9]*)$/"></input>
+						          </div>
+							        <div ng-messages="CreateForm.daLimit.$error" ng-show="CreateForm.daLimit.$dirty">
+						              <div ng-message="required || number || min || max || pattern" class="alert alert-danger margin-b-0"   translate>sms.cp.err.09</div>
+						            </div>
+								</div>
+								
+								<div>
+									<div> 
+									
+									</div>
+									<div class="form-group input-medium" ng-if="cp.queryDrLimitUnit!='m'">
+									  <div class="input-group">
+									    <span class="input-group-addon input-group-addon-extend input-header-min-size-small" >
+									    <div ng-if="cp.drRequestFl" class="required">
+									    	<label>{{'sms.cp.field.38' | translate}}</label>
+									    </div>
+									    <div ng-if="!cp.drRequestFl">
+									    	<label>{{'sms.cp.field.38' | translate}}</label>
+									    </div>
+									    </span> 
+									    <input  type="number" class="form-control" 
+								      name="queryDrHrLimit" ng-model="cp.queryDrHrLimit"  min="-1" max="2147483647" ng-required="cp.drRequestFl" ng-pattern="/^(0|\-?[1-9][0-9]*)$/"></input>
+	   							      	<span class="input-group-addon">
+										  <select class="input-form-border"  ng-model="cp.queryDrLimitUnit" name="queryDrLimitUnit" required>
+							                <option ng-repeat="unit in unitList" ng-value="unit.value">{{ unit.label | translate}}</option>
+							              </select>
+								      	</span>
+							          </div>
+								      <div ng-messages="CreateForm.queryDrHrLimit.$error" ng-show="CreateForm.queryDrHrLimit.$dirty">
+							            <div ng-message="required || number || pattern" class="alert alert-danger margin-b-0" translate>sms.cp.err.16</div>
+							            <div ng-message="max" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+							          </div>
+									</div>
+	
+									<div class="form-group input-medium" ng-if="cp.queryDrLimitUnit=='m'">
+									  <div class="input-group">
+									    <span class="input-group-addon input-group-addon-extend input-header-min-size-small" >
+									    <div ng-if="cp.drRequestFl" class="required">
+									    	<label>{{'sms.cp.field.38' | translate}}</label>
+									    </div>
+									    <div ng-if="!cp.drRequestFl">
+									    	<label>{{'sms.cp.field.38' | translate}}</label>
+									    </div>
+									    </span> 
+									    <input  type="number" class="form-control" 
+								      name="queryDrMinLimit" ng-model="cp.queryDrMinLimit"  min="-1" max="2147483647" ng-required="cp.drRequestFl" ng-pattern="/^(0|\-?[1-9][0-9]*)$/"></input>
+	   							      	<span class="input-group-addon">
+	   							      	  <select class="input-form-border"  ng-model="cp.queryDrLimitUnit" name="queryDrLimitUnit" required>
+							                <option ng-repeat="unit in unitList" ng-value="unit.value">{{ unit.label | translate}}</option>
+							              </select>
+								      	</span>
+							          </div>
+								      <div ng-messages="CreateForm.queryDrMinLimit.$error" ng-show="CreateForm.queryDrMinLimit.$dirty">
+							            <div ng-message="required || number || pattern" class="alert alert-danger margin-b-0" translate>sms.cp.err.16</div>
+							            <div ng-message="max" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+							          </div>
+									</div>
+								</div>
+								<div class="form-group input-medium" >
+									<div ng-if="cp.pushDrFl">
+									  <div class="input-group">
+									   <span class="input-group-addon input-group-addon-extend input-header-min-size-small required" ><label>{{'sms.cp.field.14' | translate}}</label></span>  
+											<input  type="url" class="form-control"
+							      name="pushDrUrl" ng-model="cp.pushDrUrl" ng-maxlength="100"></input>
+		   							      	<span class="input-group-addon lpad10rpad0">
+								            	<md-checkbox ng-model="cp.pushDrFl" name="pushDrFl"  aria-label="pushDrFl"></md-checkbox>
+									      	</span>
+							          </div>
+							      		<div ng-messages="CreateForm.pushDrUrl.$error" ng-show="CreateForm.pushDrUrl.$dirty">
+						          		  <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          		  <div ng-message="url" class="alert alert-danger margin-b-0" translate>sms.cp.err.15</div>
+						          		</div>
+					          		</div>
+					          		<div ng-if="!cp.pushDrFl">
+									  <div class="input-group">
+									    <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size "><label>{{'sms.cp.field.39' | translate}}</label></span> 
+									    <span class="input-group-addon">
+							            	<md-checkbox ng-model="cp.pushDrFl" name="pushDrFl"  aria-label="pushDrFl"></md-checkbox>
+								      	</span>
+									  </div>
+									</div>
+								</div>
+								
+								<div class="form-group input-medium" >
+									<div ng-if="cp.moSmsFl">
+									  <div class="input-group">
+									   <span class="input-group-addon input-group-addon-extend input-header-min-size-small required"><label>{{'sms.cp.field.41' | translate}}</label></span>
+											<input  type="url" class="form-control"
+							      name="deliverSmUrl" ng-model="cp.deliverSmUrl" ng-maxlength="100" ng-required="cp.moSmsFl"></input>
+		   							      	<span class="input-group-addon lpad10rpad0">
+								            	<md-checkbox ng-model="cp.moSmsFl" name="moSmsFl"  aria-label="moSmsFl"></md-checkbox>
+									      	</span>
+							          </div>
+							      		<div ng-messages="CreateForm.deliverSmUrl.$error" ng-show="CreateForm.deliverSmUrl.$dirty">
+						          		  <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          		  <div ng-message="url" class="alert alert-danger margin-b-0" translate>sms.cp.err.15</div>
+						          		</div>
+					          		</div>
+					          		<div ng-if="!cp.moSmsFl">
+									  <div class="input-group">
+									    <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.40' | translate}}</label></span> 
+									    <span class="input-group-addon">
+							            	<md-checkbox ng-model="cp.moSmsFl" name="moSmsFl"  aria-label="moSmsFl"></md-checkbox>
+								      	</span>
+									  </div>
+									</div>
+								</div>
+
+							
+								  							
+							</md-content>
+						</div>
+					</div>
+
+					<!-- MQ Detail -->
+					<div id="right" class="panel panel-primary dialog-mq-detail-min-width" ng-if="cp.cpType == '2' ">
+						<div class="panel-heading" translate>sms.cp.msg.08</div>
+						<div>
+							<md-content flex layout="column" class="pad10">
+							
+								<div class="form-group input-limited input-margin-top" >
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-min-size"><div class="required">
+						              <label>{{'sms.cp.field.31' | translate}}</label></div></span>
+						              <select class="form-control input-form-border" ng-model="cp.cpZone" name="cpZone" required>
+						                <option ng-repeat="zone in mqCpZoneSet" ng-value="zone.value">{{ zone.label | translate}}</option>
+						              </select>
+						            </div>  
+						        </div>
+						        
+ 
+								<div class="form-group input-limited" >
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend input-header-min-size"><label>{{'sms.cp.field.16' | translate}}</label></span> 
+								    <input  type="text" class="form-control" name="mqReqQName" ng-model="cp.mqReqQName" ng-maxlength="20"></input>
+						          </div>
+							      <div ng-messages="CreateForm.mqReqQName.$error" ng-show="UpdateForm.mqReqQName.$dirty">
+							        <div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.06</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+								
+								<div class="form-group input-limited" >
+								  <div class="input-group">
+								    <span  class="input-group-addon input-group-addon-extend input-header-min-size" ><label>{{'sms.cp.field.17' | translate}}</label></span> 
+								    <input  type="text" class="form-control" name="mqRespQName" ng-model="cp.mqRespQName" ng-maxlength="20" ></input>
+						          </div>
+							      <div ng-messages="CreateForm.mqRespQName.$error" ng-show="CreateForm.mqRespQName.$dirty">
+							        <div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.06</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+								
+								<!-- Not Used -->
+								<!-- 
+								<div class="form-group input-limited" ng-if="cp.apiVersion=='1'">
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend input-header-min-size required" ><label>{{'sms.cp.field.42' | translate}}</label></span> 
+								    <input  type="text" class="form-control"  ng-required="cp.apiVersion=='1'"
+							      name="mqManagerName" ng-model="cp.mqManagerName" ng-maxlength="10" ></input>
+						          </div>
+							      <div ng-messages="CreateForm.mqManagerName.$error" ng-show="CreateForm.mqManagerName.$dirty">
+							        <div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.06</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+								-->
+								
+								<!-- 
+								<div class="form-group input-limited" >
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.39' | translate}}</label></span> 
+								    <span class="input-group-addon ">
+						            	<md-checkbox ng-model="cp.pushDrFl" name="pushDrFl"  aria-label="pushDrFl"></md-checkbox>
+							      	</span>
+								  </div>
+ 								</div>
+
+								<div class="form-group input-limited" >
+									<div ng-if="cp.moSmsFl">
+									  <div class="input-group">
+									   <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.41' | translate}}</label></span>  
+											<input  type="url" class="form-control"
+							      name="deliverSmUrl" ng-model="cp.deliverSmUrl" ng-maxlength="100"></input>
+		   							      	<span class="input-group-addon lpad10rpad0">
+								            	<md-checkbox ng-model="cp.moSmsFl" name="moSmsFl"  aria-label="moSmsFl"></md-checkbox>
+									      	</span>
+							          </div>
+							      		<div ng-messages="CreateForm.deliverSmUrl.$error" ng-show="CreateForm.deliverSmUrl.$dirty">
+						          		  <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          		  <div ng-message="url" class="alert alert-danger margin-b-0" translate>sms.cp.err.15</div>
+						          		</div>
+					          		</div>
+					          		<div ng-if="!cp.moSmsFl">
+									  <div class="input-group">
+									    <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.40' | translate}}</label></span> 
+									    <span class="input-group-addon">
+							            	<md-checkbox ng-model="cp.moSmsFl" name="moSmsFl"  aria-label="moSmsFl"></md-checkbox>
+								      	</span>
+									  </div>
+									</div>
+								</div>
+
+								 
+								<div class="form-group input-limited" >
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.19' | translate}}</label></span> 
+						               <span class="input-group-addon "> 
+							          <md-checkbox ng-model="cp.prepaidFl" name="prepaidFl"  aria-label="prepaidFl"></md-checkbox>
+							        </span> 
+						            </div>  
+						        </div>
+								-->
+								
+								<div class="form-group input-limited" >
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.29' | translate}}</label></span> 
+						               <span class="input-group-addon "> 
+							          <md-checkbox ng-model="cp.legacy" name="legacy" aria-label="legacy"></md-checkbox>
+							        </span> 
+						            </div>  
+						        </div>
+						        			  
+ 
+							</md-content>
+						</div>
+					</div>
+
+				  </div>
+				</div>
+			
+				<div class="modal-footer">
+					<div style="float: right;">
+						<button type="submit" class="btn btn-primary" 
+						ng-disabled="CreateForm.$invalid || UpdateSAForm.$invalid || UpdateDAForm.$invalid" translate>msg.save</button>
+					</div>
+				</div>
+
+				</md-dialog-content>
+				
+			</form>
+			</md-dialog>
+		</div>
+	</div>
+
+	<!-- Update Form -->
+	<div style="visibility: hidden">
+		<div class="md-dialog-container" id="UpdateDialog">
+			<md-dialog class="pad10">
+			
+			<form name="UpdateForm" ng-submit="update(cp)" autocomplete="false">
+				<div class="modal-header">
+					<button type="button" class="close" ng-click="closeDialog()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" translate>sms.cp.msg.04</h4>
+				</div>
+						
+				<div class="modal-body" >	
+				<div ng-if="Error != null" class="alert alert-danger">{{ Error | translate}}</div>
+				<div layout-gt-sm="row" layout="column">
+				
+				<div id="left" class="panel panel-primary">
+					  <div class="panel-heading" layout="row">
+						<span  class="pad10" translate>sms.cp.msg.00</span>
+					  </div>
+					<div layout-gt-sm="row" layout="column">
+						<!-- CP column 1 -->					
+						<div id="leftleft">
+							<md-content flex layout="column" class="pad10 _md flex">
+							
+							
+								<div class="form-group input-limited input-margin-top">
+					             <div class="input-group">
+					               <span class="input-group-addon input-group-addon-extend" ><div class="required"><label>{{'sms.cp.field.01' | translate}}</label></div></span> 
+									 <input  type="text" class="form-control"  
+							      name="cpId" ng-model="cp.cpId" ng-required="true" ng-maxlength="30" autocomplete="false" disabled></input>
+					             </div>
+					             <div ng-messages="UpdateForm.cpId.$error" ng-show="UpdateForm.cpId.$dirty" >
+						            <div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.06</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						         </div>
+					            </div>
+		
+
+								<div class="form-group input-limited">
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend required"><label>{{'sms.cp.field.02' | translate}}</label></span> 
+								    <input  type="text" class="form-control" 
+							      name="cpName" ng-model="cp.cpName" ng-required="true" ng-maxlength="60"  required ></input>
+   								  </div>
+							      <div ng-messages="UpdateForm.cpName.$error" ng-show="UpdateForm.cpName.$dirty">
+						            <div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.06</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+								
+								<div class="form-group input-limited">
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend"><label>{{'sms.cp.field.03' | translate}}</label></span> 
+							        <input  type="text" class="form-control" 
+							        name="contactTel" ng-model="cp.contactTel" ng-maxlength="20"></input>
+							      </div>
+							        <div ng-messages="UpdateForm.contactTel.$error" ng-show="UpdateForm.contactTel.$dirty">
+						              <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						            </div>
+								</div>
+								
+								<div class="form-group input-limited">
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend"><label>{{'sms.cp.field.04' | translate}}</label></span> 
+								    <input  type="email" class="form-control" 
+							      name="contactEmail" ng-model="cp.contactEmail" ng-maxlength="255"></input>
+						          </div>
+							      <div ng-messages="UpdateForm.contactEmail.$error" ng-show="UpdateForm.contactEmail.$dirty">
+						            <div ng-message="email" class="alert alert-danger margin-b-0" translate>sms.cp.err.07</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+								  </div>
+								</div>
+					      		  
+								
+								<div class="form-group input-limited">
+						            <div class="input-group input-limited">
+						              <span class="input-group-addon input-group-addon-extend"><div class="required">
+						              <label>{{'sms.cp.field.06' | translate}}</label></div></span>
+						              <!--  <select class="form-control input-form-border" ng-model="cp.cpType" name="cpType" ng-change="cpTypeChange(cp.cpType)" required disabled> -->
+						              <select class="form-control input-form-border" ng-model="cp.cpType" name="cpType" required disabled>
+						                <option ng-repeat="type in cpTypeFilter" ng-value="type.value">{{ type.label | translate}}</option>
+						              </select>
+						            </div>  
+						        </div>
+						        
+						        <!-- Priority -->
+  								<div class="form-group input-limited">
+						            <div class="input-group input-limited">
+						              <span class="input-group-addon input-group-addon-extend"><div class="required">
+						              <label>{{'sms.cp.field.32' | translate}}</label></div></span>
+						              <select class="form-control input-form-border" ng-model="cp.priority" name="priority" required>
+						                <option ng-repeat="priority in priorityList" ng-value="priority.value">{{ priority.label | translate}}</option>
+						              </select>
+						            </div>  
+						        </div>
+						        
+						        
+						        
+								<div class="form-group input-limited">
+						            <div class="input-group input-limited">
+						              <span class="input-group-addon input-group-addon-extend"><div class="required">
+						              <label>{{'sms.cp.field.11' | translate}}</label></div></span>
+						              <select class="form-control input-form-border" ng-model="cp.apiVersion" name="apiVersion" ng-disabled="cp.cpType == '2' "  placeholder="{{'sms.cp.field.11' | translate}}" required>
+						                <option  value= "1">MSP1</option>
+						                <option  value= "2">MSP2</option>
+						              </select>
+						            </div>  
+						        </div>
+						        
+   					           <div class="form-group input-limited" >
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend"><label>{{'sms.cp.field.07' | translate}}</label></span> 
+						              <select class="form-control" ng-model="cp.status" name="status" style="border: 1px solid Grey;" required>
+						                <option ng-selected="cp.status == status.value" ng-repeat="status in statusFilter" ng-value="status.value">{{status.label | translate}}</option>
+						              </select>
+						            </div>  
+					          </div>
+							
+							</md-content>
+						</div>
+						
+						<!-- CP column 2 -->
+						<div id="leftright">
+							<md-content flex layout="column" class="pad10 _md flex">
+							
+
+								<div class="form-group input-limited input-margin-top" >
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend"><div class="required">
+								    <label>{{'sms.cp.field.10' | translate}}</label></div></span> 
+								    <input  type="number" class="form-control" 
+							      name="smsLimit" ng-model="cp.smsLimit"  min="-1" max="2147483647" required ng-pattern="/^(0|\-?[1-9][0-9]*)$/"></input>
+   							      	<span class="input-group-addon">
+						              hour(s)
+							      	</span>
+						          </div>
+							      <div ng-messages="UpdateForm.smsLimit.$error" ng-show="UpdateForm.smsLimit.$dirty">
+						            <div ng-message="required || number || pattern" class="alert alert-danger margin-b-0" translate>sms.cp.err.08</div>
+						            <div ng-message="max" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+
+					          
+								 <div class="form-group input-limited ">
+						            <div class="input-group">
+						            	<span class="input-group-addon input-group-addon-extend required input-header-checkbox-min-size"><label>{{'sms.cp.field.05' | translate}}</label></span>
+						            	<span class="input-group-addon">
+											<div class="btn-cp">
+												<button id="editSABtn" type="button" class="btn btn-xs "
+													ng-click="openUpdateSAForm()" privilege="SMS_SERVICE_01:write">
+													<i class="fa fa-pencil-square checkbox-width"></i>
+													<md-tooltip>{{'sms.cp.msg.10' | translate}}</md-tooltip>
+												</button>
+											</div>
+							            </span> 
+						            </div>  
+						        </div>
+
+								 <div class="form-group input-limited ">
+						            <div class="input-group">
+						            	<span class="input-group-addon input-group-addon-extend required input-header-checkbox-min-size"><label>{{'sms.cp.field.43' | translate}}</label></span>
+						            	<span class="input-group-addon">
+											<div class="btn-cp">
+												<button id="editDABtn" type="button" class="btn btn-xs "
+													ng-click="openUpdateDAForm()" privilege="SMS_SERVICE_01:write">
+													<i class="fa fa-pencil-square checkbox-width"></i>
+													<md-tooltip>{{'sms.cp.msg.12' | translate}}</md-tooltip>
+												</button>
+											</div>
+							            </span> 
+						            </div>  
+						        </div>
+						        
+								<div class="form-group input-limited">
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.08' | translate}}</label></span>
+						              <span class="input-group-addon"> 
+							          <md-checkbox ng-model="cp.spamCheckFl" name="spamCheckFl" class="checkbox-width" aria-label="spamCheckFl"></md-checkbox>
+							        </span> 
+						            </div>  
+						        </div>
+								
+								<div class="form-group input-limited">
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.09' | translate}}</label></span>
+						               <span class="input-group-addon"> 
+							          <md-checkbox ng-model="cp.blacklistCheckFl" name="blacklistCheckFl" class="checkbox-width" aria-label="blacklistCheckFl"></md-checkbox>
+							        </span> 
+						            </div>   
+						        </div>
+					  			
+					  			<!-- DR Request -->
+								<div ng-if="cp.cpType != '2'" class="form-group input-limited" >
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.30' | translate}}</label></span>
+						              <span class="input-group-addon"> 
+							          <md-checkbox ng-model="cp.drRequestFl" name="drRequestFl" class="checkbox-width" aria-label="drRequestFl"></md-checkbox>
+							        </span> 
+						            </div>   
+						        </div>						        
+						        
+   								<div class="form-group input-limited">
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.33' | translate}}</label></span>
+						              <span class="input-group-addon"> 
+							          <md-checkbox ng-model="cp.throughPSA" name="throughPSA" class="checkbox-width" aria-label="throughPSA"></md-checkbox>
+							        </span> 
+						            </div>   
+						        </div>
+						        
+							</md-content>
+						</div>
+					</div>
+					</div>
+					<span class="pad10"></span>
+					
+					<!-- HTTP Detail -->
+					<div id="middle"  class="panel panel-primary dialog-http-detail-min-width" ng-if="cp.cpType == '1'">
+						<div class="panel-heading" translate>sms.cp.msg.07</div>
+						<div>				
+							<md-content flex layout="column" class="pad10 _md flex" >     
+							
+								<div class="form-group input-medium input-margin-top">
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-min-size-small" ><div class="required">
+						              <label>{{'sms.cp.field.31' | translate}}</label></div></span>
+						              <select class="form-control input-form-border" ng-model="cp.cpZone" name="cpZone" required>
+						                <option ng-repeat="zone in cpZoneSet" ng-value="zone.value">{{ zone.label | translate}}</option>
+						              </select>
+						            </div>  
+						        </div>
+
+								<div class="form-group input-medium">
+									<div class="input-group input-medium">
+									<span class="input-group-addon input-group-addon-extend required input-header-min-size-small" ><label class="required">{{'sms.cp.field.13' | translate}}</label></span> 
+									<md-autocomplete style="min-width: 150px;"
+							            md-input-name="cpTimeTable"
+							            md-selected-item="selectedTimetable"
+							            md-search-text-change="searchTextChange()"
+							            md-search-text="cp.timeTableId"
+							            md-selected-item-change="selectedItemChange(item)"
+							            md-items="item in querySearch(cp.timeTableId)"
+							            md-item-text="item.timeTableId"
+							            md-min-length="0"
+							            md-input-maxlength="100"
+							            placeholder="Timetable ID"
+							            md-no-cache="true"
+							            ng-init="searchText=cp.timeTableId"
+							            md-require-match="UpdateForm.cpTimeTable.$dirty"
+							            required>
+							          <md-item-template>
+							            <span class="item-title" md-highlight-text="searchText">{{item.timeTableId}}, </span>
+							            <span class="item-metadata">{{item.timeTableName}}</span>
+							          </md-item-template>
+							          <md-not-found>
+							            <span>{{searchText}}{{'sms.cp.err.13'|translate}}</span>
+							          </md-not-found>
+							        </md-autocomplete>
+							        </div>
+							          <div ng-messages="UpdateForm.cpTimeTable.$error" ng-show="UpdateForm.cpTimeTable.$dirty">
+  							            <div ng-message="required" class="alert alert-danger margin-b-0"  translate>sms.cp.err.14</div>
+						            	<div ng-message="md-require-match" class="alert alert-danger margin-b-0" translate>sms.cp.err.12</div>
+						            	<div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          	  </div>
+								</div>
+
+								<div class="form-group input-medium" >
+								  <div class="input-group" >
+								    <span class="input-group-addon input-group-addon-extend input-header-min-size-small" >
+								    <div class="required"><label>{{'sms.cp.field.12' | translate}}</label></div></span> 
+								     <input  type="number" class="form-control"
+						      name="daLimit" ng-model="cp.daLimit" min="0" max="100" placeholder="1-100"  required ng-pattern="/^(0|\-?[1-9][0-9]*)$/"></input>
+						          </div>
+							        <div ng-messages="UpdateForm.daLimit.$error" ng-show="UpdateForm.daLimit.$dirty">
+						              <div ng-message="required || number || min || max || pattern" class="alert alert-danger margin-b-0"   translate>sms.cp.err.09</div>
+						            </div>
+								</div>
+
+								<div class="form-group input-medium" ng-if="cp.queryDrLimitUnit!='m'">
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend input-header-min-size-small" >
+								    <div ng-if="cp.drRequestFl" class="required">
+								    	<label>{{'sms.cp.field.38' | translate}}</label>
+								    </div>
+								    <div ng-if="!cp.drRequestFl">
+								    	<label>{{'sms.cp.field.38' | translate}}</label>
+								    </div>
+								    </span> 
+								    <input  type="number" class="form-control" 
+							      name="queryDrHrLimit" ng-model="cp.queryDrHrLimit"  min="-1" max="2147483647" ng-required="cp.drRequestFl" ng-pattern="/^(0|\-?[1-9][0-9]*)$/"></input>
+   							      	<span class="input-group-addon">
+   							      	  <select class="input-form-border"  ng-model="cp.queryDrLimitUnit" name="queryDrLimitUnit" required>
+						                <option ng-repeat="unit in unitList" ng-value="unit.value">{{ unit.label | translate}}</option>
+						              </select>
+							      	</span>
+						          </div>
+							      <div ng-messages="UpdateForm.queryDrHrLimit.$error" ng-show="UpdateForm.queryDrHrLimit.$dirty">
+						            <div ng-message="required || number || pattern" class="alert alert-danger margin-b-0" translate>sms.cp.err.16</div>
+						            <div ng-message="max" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+
+								<div class="form-group input-medium" ng-if="cp.queryDrLimitUnit=='m'">
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend input-header-min-size-small" >
+								    <div ng-if="cp.drRequestFl" class="required">
+								    	<label>{{'sms.cp.field.38' | translate}}</label>
+								    </div>
+								    <div ng-if="!cp.drRequestFl">
+								    	<label>{{'sms.cp.field.38' | translate}}</label>
+								    </div>
+								    </span> 
+								    <input  type="number" class="form-control" 
+							      name="queryDrMinLimit" ng-model="cp.queryDrMinLimit"  min="-1" max="2147483647" ng-required="cp.drRequestFl" ng-pattern="/^(0|\-?[1-9][0-9]*)$/"></input>
+   							      	<span class="input-group-addon">
+   							      	  <select class="input-form-border"  ng-model="cp.queryDrLimitUnit" name="queryDrLimitUnit" required>
+						                <option ng-repeat="unit in unitList" ng-value="unit.value">{{ unit.label | translate}}</option>
+						              </select>
+							      	</span>
+						          </div>
+							      <div ng-messages="UpdateForm.queryDrMinLimit.$error" ng-show="UpdateForm.queryDrMinLimit.$dirty">
+						            <div ng-message="required || number || pattern" class="alert alert-danger margin-b-0" translate>sms.cp.err.16</div>
+						            <div ng-message="max" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+
+								<div class="form-group input-medium" >
+									<div ng-if="cp.pushDrFl">
+									  <div class="input-group">
+									   <span class="input-group-addon input-group-addon-extend input-header-min-size-small" ><label>{{'sms.cp.field.14' | translate}}</label></span>  
+											<input  type="url" class="form-control"
+							      name="pushDrUrl" ng-model="cp.pushDrUrl" ng-maxlength="100"></input>
+		   							      	<span class="input-group-addon lpad10rpad0">
+								            	<md-checkbox ng-model="cp.pushDrFl" name="pushDrFl"  aria-label="pushDrFl"></md-checkbox>
+									      	</span>
+							          </div>
+							      		<div ng-messages="UpdateForm.pushDrUrl.$error" ng-show="UpdateForm.pushDrUrl.$dirty">
+						          		  <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          		  <div ng-message="url" class="alert alert-danger margin-b-0" translate>sms.cp.err.15</div>
+						          		</div>
+					          		</div>
+					          		<div ng-if="!cp.pushDrFl">
+									  <div class="input-group">
+									    <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.39' | translate}}</label></span> 
+									    <span class="input-group-addon">
+							            	<md-checkbox ng-model="cp.pushDrFl" name="pushDrFl"  aria-label="pushDrFl"></md-checkbox>
+								      	</span>
+									  </div>
+									</div>
+								</div>
+								
+								<div class="form-group input-medium" >
+									<div ng-if="cp.moSmsFl">
+									  <div class="input-group">
+									   <span class="input-group-addon input-group-addon-extend input-header-min-size-small required"><label>{{'sms.cp.field.41' | translate}}</label></span>  
+											<input  type="url" class="form-control"
+							      name="deliverSmUrl" ng-model="cp.deliverSmUrl" ng-maxlength="100"  ng-required="cp.moSmsFl"></input>
+		   							      	<span class="input-group-addon lpad10rpad0">
+								            	<md-checkbox ng-model="cp.moSmsFl" name="moSmsFl"  aria-label="moSmsFl"></md-checkbox>
+									      	</span>
+							          </div>
+							      		<div ng-messages="UpdateForm.deliverSmUrl.$error" ng-show="UpdateForm.deliverSmUrl.$dirty">
+						          		  <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          		  <div ng-message="url" class="alert alert-danger margin-b-0" translate>sms.cp.err.15</div>
+						          		</div>
+					          		</div>
+					          		<div ng-if="!cp.moSmsFl">
+									  <div class="input-group">
+									    <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.40' | translate}}</label></span> 
+									    <span class="input-group-addon">
+							            	<md-checkbox ng-model="cp.moSmsFl" name="moSmsFl"  aria-label="moSmsFl"></md-checkbox>
+								      	</span>
+									  </div>
+									</div>
+								</div>			    							
+							</md-content>
+						</div>
+					</div>
+
+					<!-- MQ Detail -->
+					<div id="right" class="panel panel-primary dialog-mq-detail-min-width" ng-if="cp.cpType == '2'">
+						<div class="panel-heading" translate>sms.cp.msg.08</div>
+						<div>
+							<md-content flex layout="column" class="pad10">
+							
+								<div class="form-group input-limited input-margin-top" >
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-min-size"><div class="required">
+						              <label>{{'sms.cp.field.31' | translate}}</label></div></span>
+						              <select class="form-control input-form-border" ng-model="cp.cpZone" name="cpZone" required>
+						                <option ng-repeat="zone in mqCpZoneSet" ng-value="zone.value">{{ zone.label | translate}}</option>
+						              </select>
+						            </div>  
+						        </div>
+								
+								
+								<div class="form-group input-limited" >
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend input-header-min-size"><label>{{'sms.cp.field.16' | translate}}</label></span> 
+								    <input  type="text" class="form-control" name="mqReqQName" ng-model="cp.mqReqQName" ng-maxlength="20"></input>
+						          </div>
+							      <div ng-messages="UpdateForm.mqReqQName.$error" ng-show="UpdateForm.mqReqQName.$dirty">
+							        <div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.06</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+								
+								<div class="form-group input-limited" >
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend input-header-min-size" ><label>{{'sms.cp.field.17' | translate}}</label></span> 
+								    <input  type="text" class="form-control" name="mqRespQName" ng-model="cp.mqRespQName" ng-maxlength="20" ></input>
+						          </div>
+							      <div ng-messages="UpdateForm.mqRespQName.$error" ng-show="UpdateForm.mqRespQName.$dirty">
+							        <div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.06</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+								
+								<!--  
+								<div class="form-group input-limited" ng-if="cp.apiVersion=='1'">
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend input-header-min-size required" ><label>{{'sms.cp.field.42' | translate}}</label></span> 
+								    <input  type="text" class="form-control"  ng-required="cp.apiVersion=='1'"
+							      name="mqManagerName" ng-model="cp.mqManagerName" ng-maxlength="10" ></input>
+						          </div>
+							      <div ng-messages="UpdateForm.mqManagerName.$error" ng-show="UpdateForm.mqManagerName.$dirty">
+							        <div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.06</div>
+						            <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          </div>
+								</div>
+								-->
+
+
+								<!--
+								<div class="form-group input-limited" >
+								  <div class="input-group">
+								    <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.39' | translate}}</label></span> 
+								    <span class="input-group-addon ">
+						            	<md-checkbox ng-model="cp.pushDrFl" name="pushDrFl"  aria-label="pushDrFl"></md-checkbox>
+							      	</span>
+								  </div>
+ 								</div>
+
+								<div class="form-group input-limited" >
+									<div ng-if="cp.moSmsFl">
+									  <div class="input-group">
+									   <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.41' | translate}}</label></span>  
+											<input  type="url" class="form-control"
+							      name="deliverSmUrl" ng-model="cp.deliverSmUrl" ng-maxlength="100"></input>
+		   							      	<span class="input-group-addon lpad10rpad0">
+								            	<md-checkbox ng-model="cp.moSmsFl" name="moSmsFl"  aria-label="moSmsFl"></md-checkbox>
+									      	</span>
+							          </div>
+							      		<div ng-messages="UpdateForm.deliverSmUrl.$error" ng-show="UpdateForm.deliverSmUrl.$dirty">
+						          		  <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+						          		  <div ng-message="url" class="alert alert-danger margin-b-0" translate>sms.cp.err.15</div>
+						          		</div>
+					          		</div>
+					          		<div ng-if="!cp.moSmsFl">
+									  <div class="input-group">
+									    <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.40' | translate}}</label></span> 
+									    <span class="input-group-addon">
+							            	<md-checkbox ng-model="cp.moSmsFl" name="moSmsFl"  aria-label="moSmsFl"></md-checkbox>
+								      	</span>
+									  </div>
+									</div>
+								</div>
+
+								  
+								<div class="form-group input-limited" >
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.19' | translate}}</label></span> 
+						               <span class="input-group-addon "> 
+							          <md-checkbox ng-model="cp.prepaidFl" name="prepaidFl"  aria-label="prepaidFl"></md-checkbox>
+							        </span> 
+						            </div>  
+						        </div>
+								-->
+								
+								<div class="form-group input-limited" >
+						            <div class="input-group">
+						              <span class="input-group-addon input-group-addon-extend input-header-checkbox-min-size"><label>{{'sms.cp.field.29' | translate}}</label></span> 
+						               <span class="input-group-addon "> 
+							          <md-checkbox ng-model="cp.legacy" name="legacy" aria-label="legacy" ng-disabled="true"></md-checkbox>
+							        </span> 
+						            </div>  
+						        </div>
+						        			  
+ 
+							</md-content>
+						</div>
+					</div>
+
+				  </div>
+				</div>
+			
+				<div class="modal-footer">
+			        <div style="float:left;">
+			           <button type="button" class="btn btn-danger" ng-click="confirmDelete(cp)">Delete</button>
+			        </div>
+					<div style="float: right;">
+						<button type="submit" class="btn btn-primary" 
+						ng-disabled="UpdateForm.$invalid || UpdateSAForm.$invalid || UpdateDAForm.$invalid" translate>msg.save</button>
+					</div>
+				</div>
+
+				</md-dialog-content>
+				
+			</form>
+			</md-dialog>
+		</div>
+	</div>
+
+ 
+  
+  
+	<!-- Source Address Form -->
+	<div style="visibility: hidden;">
+		<div class="md-dialog-container" id="UpdateSADialog" >
+			<md-dialog class="pad10">
+			
+			<form name="UpdateSAForm" ng-submit="updateSA(cp)" autocomplete="false" style="min-width:360px;">
+				<div class="modal-header">
+					<button type="button" class="close" ng-click="closeDialog()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" translate>sms.cp.msg.10</h4>
+				</div>
+						
+				<div class="modal-body">	
+				<div ng-if="Error != null" class="alert alert-danger">{{ Error | translate}}</div>
+				<div layout-gt-sm="row" layout="column">
+					<div id="middle"  class="panel">
+						<div id="middleLow"  class="panel panel-primary" style="min-height:310px; min-width:450px;">
+							<div class="panel-heading" layout="row" layout-align="space-between center">
+								<span translate>sms.cp.field.05</span>
+								<div class="btn-cp">
+									<button id="addSABtn" type="button" class="btn btn-xs btn-primary "
+										ng-click="addSourceAddr(cp)">
+										<i class="fa fa-plus-square fa-fw"></i>
+										<md-tooltip>{{'msg.add' | translate}}</md-tooltip>
+									</button>
+								</div>
+							</div>
+							<md-content flex layout="column" class="pad10">
+							<table class="table input-margin-top">
+							<tbody ng-repeat="(key,val) in cp.cpsaMap">
+								<tr>
+									<td style ="vertical-align: middle;"> 
+									</td>
+									<td layout="row" >
+										<div class="form-group input-narrow input-margin-top" style="width: 400px;">
+										  <div class="input-group">
+										    <span  hide-sm hide-xs class="input-group-addon input-group-addon-extend">
+										    <div class="required"><label >{{'sms.cp.field.44' | translate}}: {{$index+1}}</label></div></span> 
+										    <input  type="text" class="form-control"  autocomplete="off"
+									      name="sa{{$index}}" ng-model="val.sourceAddress" required ng-maxlength="255" ></input>
+									        <span class="input-group-addon"><button type="button" class="close"	ng-click="delSourceAddr($index)">
+											<span aria-hidden="true">&times;</span>	</button></span>
+								          </div>
+								     	  <div ng-messages="UpdateSAForm['sa'+$index].$error" ng-show="UpdateSAForm['sa'+$index].$dirty">
+					           				<div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.10</div>
+					           				<div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+					          			  </div>
+									    </md-input-container>
+										</div>
+
+
+									</td>
+								</tr>
+							</tbody>
+							</table>
+							
+							</md-content>
+						</div>
+					</div>
+				</div>
+				</div>
+				</md-dialog-content>
+				
+			</form>
+			</md-dialog>
+		</div>
+	</div>
+	
+	  	<!-- Destination Address Form -->
+	<div style="visibility: hidden;">
+		<div class="md-dialog-container" id="UpdateDADialog" >
+			<md-dialog class="pad10">
+			
+			<form name="UpdateDAForm" ng-submit="updateDA(cp)" autocomplete="false" style="min-width:360px;">
+				<div class="modal-header">
+					<button type="button" class="close" ng-click="closeDialog()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" translate>sms.cp.msg.12</h4>
+				</div>
+						
+				<div class="modal-body">	
+				<div ng-if="Error != null" class="alert alert-danger">{{ Error | translate}}</div>
+				<div layout-gt-sm="row" layout="column">
+					<div id="middle"  class="panel">
+						<div id="middleLow"  class="panel panel-primary" style="min-height:310px; min-width:450px;">
+							<div class="panel-heading" layout="row" layout-align="space-between center">
+								<span translate>sms.cp.field.43</span>
+								<div class="btn-cp">
+									<button id="addSABtn" type="button" class="btn btn-xs btn-primary "
+										ng-click="addDestinationAddr(cp)">
+										<i class="fa fa-plus-square fa-fw"></i>
+										<md-tooltip>{{'msg.add' | translate}}</md-tooltip>
+									</button>
+								</div>
+							</div>
+							<md-content flex layout="column" class="pad10">
+							<table class="table input-margin-top">
+							<tbody ng-repeat="(key,val) in cp.cpdaMap">
+								<tr>
+									<td style ="vertical-align: middle;"> 
+									</td>
+									<td layout="row" >
+										<div class="form-group input-narrow input-margin-top" style="width: 400px;">
+										  <div class="input-group">
+										    <span  hide-sm hide-xs class="input-group-addon input-group-addon-extend">
+										    <div class="required"><label >{{'sms.cp.field.45' | translate}}: {{$index+1}}</label></div></span> 
+										    <input  type="text" class="form-control"  autocomplete="off"
+									      name="da{{$index}}" ng-model="val.destinationAddress" required ng-maxlength="255" ></input>
+									        <span class="input-group-addon"><button type="button" class="close"	ng-click="delDestinationAddr($index)">
+											<span aria-hidden="true">&times;</span>	</button></span>
+								          </div>
+								     	  <div ng-messages="UpdateDAForm['da'+$index].$error" ng-show="UpdateDAForm['da'+$index].$dirty">
+					           				<div ng-message="required" class="alert alert-danger margin-b-0" translate>sms.cp.err.10</div>
+					           				<div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>sms.cp.err.11</div>
+					          			  </div>
+									    </md-input-container>
+										</div>
+
+
+									</td>
+								</tr>
+							</tbody>
+							</table>
+							
+							</md-content>
+						</div>
+					</div>
+				</div>
+				</div>
+				</md-dialog-content>
+				
+			</form>
+			</md-dialog>
+		</div>
+	</div>
+	
+</div>
+
+<div layout="row">
+  <!-- Source Address detail -->
+  <div layout="column" layout-gt-sm="row" ng-show="unbindedCp != null && unbindedCp.cpsaMap != null  && showSA != false" class="input-margin-top">
+    <div class="panel panel-primary" style="min-width:300px;">
+	  <div class="panel-heading" layout="row">
+		<span translate>sms.cp.field.05</span>
+	  </div>
+      <div class="panel-body" layout="column">
+        <table class="table" layout="column">
+          
+          	<tr>
+	            <td>{{'sms.cp.field.01'|translate}}:</td>
+	            <td><json-formatter open="1" json="unbindedCp.cpId"></json-formatter></td>
+            </tr>
+          
+          <tbody>
+
+          	<tr>
+	          	<td>
+   		          	<span ng-if="cp.cpsaMap.length == 0">No data</span>
+	          		<table>
+						<tr ng-repeat="(key,val) in unbindedCp.cpsaMap" ng-if="$index <= 9">
+			             <td>SA</td>
+			             <td>{{$index+1}}</td>
+			             <td>:</td>
+			             <td><json-formatter open="1" json="val.sourceAddress"></json-formatter></td>
+			           </tr>
+		           </table>
+	           </td>
+	           	<td ng-if="cp.cpsaMap.length > 10">
+		           	<table>
+						<tr ng-repeat="(key,val) in unbindedCp.cpsaMap" ng-if="$index >9">
+			             <td>SA</td>
+			             <td>{{$index+1}}</td>
+			             <td>:</td>
+			             <td><json-formatter open="1" json="val.sourceAddress"></json-formatter></td>
+			           </tr>
+		           </table>
+	           </td>
+           </tr>
+		  </tbody>
+		  
+        </table>
+      </div>
+    </div>
+  </div>
+  <span class="pad10"></span>
+  <!-- Destination Address detail -->
+  <div layout="column" layout-gt-sm="row" ng-show="unbindedCp != null && unbindedCp.cpdaMap != null  && showDA != false" class="input-margin-top">
+    <div class="panel panel-primary" style="min-width:300px;">
+	  <div class="panel-heading" layout="row">
+		<span translate>sms.cp.field.43</span>
+	  </div>
+      <div class="panel-body" layout="column">
+        <table class="table" layout="column">
+          
+          	<tr>
+	            <td>{{'sms.cp.field.01'|translate}}:</td>
+	            <td><json-formatter open="1" json="unbindedCp.cpId"></json-formatter></td>
+            </tr>
+          
+          <tbody>
+
+          	<tr>
+	          	<td>
+   		          	<span ng-if="cp.cpdaMap.length == 0">No data</span>
+	          		<table>
+						<tr ng-repeat="(key,val) in unbindedCp.cpdaMap" ng-if="$index <= 9">
+			             <td>DA</td>
+			             <td>{{$index+1}}</td>
+			             <td>:</td>
+			             <td><json-formatter open="1" json="val.destinationAddress"></json-formatter></td>
+			           </tr>
+		           </table>
+	           </td>
+	           	<td ng-if="cp.cpdaMap.length > 10">
+		           	<table>
+						<tr ng-repeat="(key,val) in unbindedCp.cpdaMap" ng-if="$index >9">
+			             <td>DA</td>
+			             <td>{{$index+1}}</td>
+			             <td>:</td>
+			             <td><json-formatter open="1" json="val.destinationAddress"></json-formatter></td>
+			           </tr>
+		           </table>
+	           </td>
+           </tr>
+		  </tbody>
+		  
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>

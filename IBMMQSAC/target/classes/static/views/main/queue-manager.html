@@ -1,0 +1,173 @@
+<div ng-app="MQSAC" class="md-padding" ng-cloak>
+	<div ng-controller="mqCtrl as ctrl" >
+	  <md-content class="md-padding">
+		
+		<div layout="column">
+			<div ng-if="error != null" class="alert alert-danger" style="display:inline-table;">{{ error }}</div>
+			<div ng-if="error2 != null" class="alert alert-danger" style="display:inline-table;">{{ error2 }}</div>
+			<div ng-if="error3 != null" class="alert alert-danger" style="display:inline-table;">{{ error3 }}</div>
+			<div ng-if="result != null" class="alert alert-success" style="display:inline-table;">{{ result }}</div>
+			<div ng-if="result2 != null" class="alert alert-success" style="display:inline-table;">{{ result2 }}</div>
+			<div ng-if="result3 != null" class="alert alert-success" style="display:inline-table;">{{ result3 }}</div>
+		</div>
+      	 
+      	 
+
+      	 
+		<div layout="column">
+			<div layout="column" layout-gt-sm="row">
+				<div name="mq-panel" class="panel panel-primary" style="display:inline-table;" >
+					<div class="panel-heading" layout="row" layout-align="space-between center">
+						<span class="lead-margin-b-0">New SMS Platform</span>
+						<div class="btn-cp">
+							<button id="refreshBtn" class="btn btn-xs btn-primary "
+								ng-click="refreshMQForm()">
+								<i class="fa fa-refresh fa-fw"></i>
+								<md-tooltip>Refresh</md-tooltip>
+							</button>
+						</div>
+					</div>
+					<div class="panel-body" >
+					
+						<form name="CreateMQForm" ng-submit="createMQ(mqManagerName, mqCp)">
+						  <div layout="row" class="input-group-extend" style="width:360px">
+							<div class="form-group flex">
+					            <div class="input-group">
+					              <span class="input-group-addon"><label>CP</label></span> 
+					               <span class="input-group-addon"> 
+						          <md-checkbox ng-model="cpFlag" name="cpFlag" aria-label="cpFlag"></md-checkbox>
+						        </span> 
+					            </div>  
+					        </div>
+   							<div class="form-group flex" >
+					            <div class="input-group ">
+					              <span class="input-group-addon" style="padding-left: 10px;padding-right: 5px;"><label>User</label></span> 
+					               <span class="input-group-addon "> 
+						          <md-checkbox ng-model="userFlag" name="userFlag" aria-label="userFlag"></md-checkbox>
+						        </span> 
+					            </div>  
+					        </div>
+   							<div class="form-group flex" >
+					            <div class="input-group ">
+					              <span class="input-group-addon"><label>MQ</label></span> 
+					               <span class="input-group-addon "> 
+						          <md-checkbox ng-model="mqFlag" name="mqFlag" aria-label="mqFlag"></md-checkbox>
+						        </span> 
+					            </div>  
+					        </div>
+						</div>	
+						
+							<!--  
+							<div class="form-group" >
+								<div class="input-group input-group-extend">
+									<span class="input-group-addon input-header-min-size-small"> 
+									<label>MQ Manager</label></span> 
+									<select class="form-control" ng-init="mqManagerName = qManagerList[0]" ng-model="mqManagerName"	
+									name="mqManagerName" ng-options="mqm.value for mqm in qManagerList" required>
+									</select> 
+								</div>
+							</div>
+							 -->
+							<div class="form-group">
+								<div class="input-group input-group-extend">
+									<span class="input-group-addon input-header-min-size-small"> <div class="required"><label>SYS ID</label></div></span> 
+	 								<input  type="text" class="form-control" name="mqCpId" ng-model="mqCp.cpId" ng-required="true" ng-maxlength="7" autocomplete="false" ng-pattern="/^[^a-z]*$/"> </input>
+								</div>
+								<div ng-messages="CreateMQForm.mqCpId.$error" ng-show="CreateMQForm.mqCpId.$dirty" >
+							        <div ng-message="required" class="alert alert-danger margin-b-0" translate>This is required.</div>
+							        <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>Maximum length reached.</div>
+							        <div ng-message="pattern" class="alert alert-danger margin-b-0" translate>MQ sCP Name should be uppercase.</div>
+							    </div>
+							</div>
+							
+							<div class="form-group" ng-if="cpFlag">
+								<div class="input-group input-group-extend">
+									<span class="input-group-addon input-header-min-size-small"> <div class="required"><label>CP Name</label></div></span>
+	 								<input  type="text" class="form-control" name="mqCpName" ng-model="mqCp.cpName" ng-required="true" ng-maxlength="60" autocomplete="false"></input>
+								</div>
+								<div ng-messages="CreateMQForm.mqCpName.$error" ng-show="CreateMQForm.mqCpName.$dirty" >
+							        <div ng-message="required" class="alert alert-danger margin-b-0" translate>This is required.</div>
+							        <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>Maximum length reached.</div>
+							    </div>
+							</div>
+							
+   							<div class="form-group" ng-if="cpFlag">
+					            <div class="input-group input-group-extend">
+					              <span class="input-group-addon"><label>SpamCheck</label></span> 
+					               <span class="input-group-addon input-header-min-size-small" style="text-align:  right;padding-right: 50px;"> 
+						          <md-checkbox ng-model="mqCp.spamCheck" name="spamCheck" aria-label="spamCheck"></md-checkbox>
+						        </span> 
+					            </div>  
+					        </div>							
+					        
+							<div class="form-group" ng-if="cpFlag">
+					            <div class="input-group input-group-extend">
+					              <span class="input-group-addon"><label>Is Legacy</label></span> 
+					               <span class="input-group-addon input-header-min-size-small" style="text-align:  right;padding-right: 50px;"> 
+						          <md-checkbox ng-model="mqCp.legacy" name="legacy" aria-label="legacy" style=""></md-checkbox>
+						        </span> 
+					            </div>  
+					        </div>
+					        
+
+							
+							<div class="form-group" ng-if="!mqCp.legacy && cpFlag">
+							  <div class="input-group input-group-extend">
+							    <span class="input-group-addon input-header-min-size-small"><div class="required">
+							    <label>Water Level</label></div></span> 
+							    <input  type="number" class="form-control" 
+						      name="waterLevel" ng-model="mqCp.waterLevel"  min="-1" max="2147483647" required ng-pattern="/^(0|\-?[1-9][0-9]*)$/"></input>
+  							      	<span class="input-group-addon">
+					             hour(s)
+						      	</span>
+					          </div>
+						      <div ng-messages="CreateForm.waterLevel.$error" ng-show="CreateForm.waterLevel.$dirty">
+					            <div ng-message="required || number || pattern" class="alert alert-danger margin-b-0" translate>A valid water level is required.</div>
+					            <div ng-message="max" class="alert alert-danger margin-b-0" translate>Maximum length reached.</div> 
+					          </div>
+							</div>
+							
+							<div class="form-group" ng-if="cpFlag">
+								<div class="input-group input-group-extend">
+									<span class="input-group-addon input-header-min-size-small"><div class="required"><label>Source Address</label></div></span>
+	 								<input  type="text" class="form-control" name="mqCpSourceAddress" ng-model="mqCp.sourceAddress" ng-required="true" ng-maxlength="60" autocomplete="false"></input>
+								</div>
+								<div ng-messages="CreateMQForm.mqCpSourceAddress.$error" ng-show="CreateMQForm.mqCpSourceAddress.$dirty" >
+							        <div ng-message="required" class="alert alert-danger margin-b-0" translate>This is required.</div>
+							        <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>Maximum length reached.</div>
+							    </div>
+							</div>
+							
+							<div class="form-group" ng-if="cpFlag">
+								<div class="input-group input-group-extend" style="max-width:360px">
+									<span class="input-group-addon input-header-min-size-small"><div class="required"><label>Destination Address</label></div></span>
+	 								<input  type="text" class="form-control" name="mqDestinationAddress" ng-model="mqCp.destinationAddress" ng-required="true" ng-maxlength="60" autocomplete="false"></input>
+								</div>
+								<div ng-messages="CreateMQForm.mqCp.destinationAddress.$error" ng-show="CreateMQForm.mqDestinationAddress.$dirty" >
+							        <div ng-message="required" class="alert alert-danger margin-b-0" translate>This is required.</div>
+							        <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>Maximum length reached.</div>
+							    </div>
+							</div>
+							
+
+							<div class="modal-footer">
+							<!-- 
+						        <div style="float:left;">
+						           <button type="button" class="btn btn-danger" ng-disabled="CreateMQForm.$invalid" ng-click="confirmDeleteMQ(mqManagerName, mqCp)">Delete</button>
+						        </div>
+						     -->
+								<div style="float: right;">
+									<button type="submit" class="btn btn-primary" 
+									ng-disabled="(cpFlag!=true && userFlag!=true && mqFlag!=true) || CreateMQForm.$invalid ">Create</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		
+	  </md-content>
+	</div>
+</div>

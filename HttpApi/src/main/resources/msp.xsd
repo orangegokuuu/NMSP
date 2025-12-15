@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="SMS">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="SysId"/>
+        <xs:element name="Message">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="100" minOccurs="1" name="Target"/>
+              <xs:element name="Source"/>
+              <xs:element name="Text"/>
+              <xs:element name="Language"/>
+              <xs:element name="DrFlag"/>
+              <xs:element name="ValidType"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SMSResp">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ResultCode"/>
+        <xs:element name="MessageId"/>
+        <xs:element name="Timestamp"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RetrieveDR">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="SysId"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RetrieveDRResp">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ResultCode"/>
+        <xs:element name="MessageId"/>
+        <xs:element name="Status"/>
+        <xs:element name="BNumber"/>
+        <xs:element name="Timestamp"/>
+        <xs:element name="DeliveryReport">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id"/>
+              <xs:element name="SubmitDate"/>
+              <xs:element name="DoneDate"/>
+              <xs:element name="State"/>
+              <xs:element name="Error"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="QueryDR">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="SysId"/>
+        <xs:element name="MessageId"/>
+        <xs:element name="BNumber"/>
+        <xs:element name="Type"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="QueryDRResp">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ResultCode"/>
+        <xs:element name="Message">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="MessageId"/>
+              <xs:element name="Status"/>
+              <xs:element name="BNumber"/>
+              <xs:element name="Timestamp"/>
+              <xs:element name="DeliveryReport">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Id"/>
+                    <xs:element name="SubmitDate"/>
+                    <xs:element name="DoneDate"/>
+                    <xs:element name="State"/>
+                    <xs:element name="Error"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PushDR">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="MessageId"/>
+        <xs:element name="Status"/>
+        <xs:element name="BNumber"/>
+        <xs:element name="Timestamp"/>
+        <xs:element name="DeliveryReport">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id"/>
+              <xs:element name="SubmitDate"/>
+              <xs:element name="DoneDate"/>
+              <xs:element name="State"/>
+              <xs:element name="Error">
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PushDRResp">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ResultCode"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeliverSM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="SysId"/>
+        <xs:element name="Message">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Target"/>
+              <xs:element name="Source"/>
+              <xs:element name="Language"/>
+              <xs:element name="Text"/>
+              <xs:element name="Timestamp"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeliverSMResp">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ResultCode"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

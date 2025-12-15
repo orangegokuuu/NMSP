@@ -1,0 +1,348 @@
+/*
+ * Default ADM Style
+ */
+html, body {
+	height: 100%;
+}
+
+.header, .marketing, .footer {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+md-sidenav, md-sidenav.md-locked-open, md-sidenav.md-closed.md-locked-open-add-active
+	{
+	min-width: 0px ! important;
+	width: auto ! important;
+	max-width: 250px ! important;
+	background-image: linear-gradient(to right, #222222 10px, #333333 10px);
+	background-repeat: repeat-x;
+}
+
+md-toolbar {
+	padding-left: 15px;
+	padding-right: 15px;
+	max-height: 30px;
+	background-image: linear-gradient(to right, #222222 10px, #333333 10px);
+	border-bottom: 1px solid #e5e5e5;
+}
+
+md-tooltip {
+	box-shadow: none;
+	border: none;
+	transform: none;
+	font-size: 10px;
+	-webkit-transform: none;
+}
+
+md-switch {
+    margin : 0px 0px;
+    height : 20px;
+}
+md-checkbox {
+	margin : 0px 0px;
+}
+md-checkbox[disabled] .md-icon {
+    border-style: dashed;
+}
+.avatar {
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-bottom: 15px;
+	padding-top: 15px;
+	color: black;
+}
+
+.alert {
+	padding: 5px;
+}
+
+hr.divider {
+	margin-top: 0px;
+	margin-bottom: 20px;
+	border: 0;
+	border-top: 1px solid rgb(189, 189, 189);
+}
+
+md-menu-item {
+	display: block;
+	padding-top: 10px;
+	color: rgba(0, 0, 0, .87);
+	font-size: 16px;
+}
+
+md-menu-item:hover {
+	cursor: pointer;
+	background-color: rgba(0, 0, 0, .10);
+}
+
+.lpad10 {
+	padding-left: 10px;
+	white-space: nowrap;
+}
+
+.pad10 {
+	padding-left: 10px;
+	padding-right: 10px;
+	white-space: nowrap;
+}
+
+.wpad10 {
+	padding-left: 10px;
+	padding-right: 10px;
+	white-space: initial;
+}
+
+.lpad10rpad0 {
+	padding-left: 10px;
+	padding-right: 0px;
+}
+
+.npad{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.small-footer {
+	padding: 0px 0px;
+	background-color: #f5f5f5;
+	border-top: 1px solid #ddd;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+
+/* 
+ * Default ngForm style
+ */
+input.ng-pristine {
+	border: 1px solid Grey;
+}
+
+input.ng-dirty.ng-valid {
+	border: 1px solid Green;
+}
+
+input.ng-dirty.ng-invalid {
+	border: 1px solid Red;
+}
+
+textarea.ng-pristine {
+	border: 1px solid Grey;
+}
+
+textarea.ng-dirty.ng-valid {
+	border: 1px solid Green;
+}
+
+textarea.ng-dirty.ng-invalid {
+	border: 1px solid Red;
+}
+
+/* Fix ag-grid button mess up with bootstrap */
+button[disabled=disabled], button:disabled {
+	color: #c0c0c0;
+}
+
+option[value^=\?] {
+	display: none;
+}
+
+.lead-margin-b-0 {
+    /* margin-bottom: 20px; */
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.4;
+}
+
+.input-small{
+	width: 200px;
+}
+
+.input-small-narrow {
+	width: 230px;
+}
+
+.input-narrow {
+	width: 250px;
+}
+
+.input-limited {
+    width: 300px;
+}
+
+.input-medium {
+    width: 350px;
+}
+
+.input-large {
+    width: 380px;
+}
+
+.margin-b-200 {
+	margin-bottom: 200px;
+}
+
+.margin-b-0 {
+	margin-bottom: 0px;
+}
+
+.input-margin-top {
+	margin-top: 10px;
+}
+
+.checkbox-width {
+	width : 20px;	
+}
+
+.vertical-center {
+	min-height: 94%; /* Fallback for browsers do NOT support vh unit */
+	min-height: 94vh; /* These two lines are counted as one :-)       */
+	display: flex;
+	align-items: center;
+}
+
+#loading-bar .bar {
+	height: 4px;
+}
+
+#loading-bar-spinner .spinner-icon {
+	width: 30px;
+	height: 30px;
+	border: solid 4px transparent;
+	border-top-color: #29d;
+	border-left-color: #29d;
+	border-radius: 50%;
+}
+
+.v-divider {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	height: 1px;
+	width: 100%;
+	border-top: 1px solid gray;
+}
+
+.panel {
+   display: flex;
+   flex-direction:column;
+}
+
+.panel-body {
+   display: flex;
+   flex-grow:1;
+}
+
+
+
+.table > tbody > tr > td  {
+    padding: 2px;
+    vertical-align: top;
+    border-top : none;
+}
+
+.ta-toolbar {
+    background-color: #F0F0F0;
+    padding: 10px 10px 5px;
+    margin-left: 0px; /* Override bootstrap */
+    border: 1px solid #EEE;
+}
+
+.modal-content {
+  overflow-y: auto;
+}
+
+.inputErrors md-input-container > p {
+  font-size: 0.8em;
+  text-align: left;
+  width: 100%; 
+  }
+  
+md-input-container .md-input{
+    background-color: #fff;
+}
+
+md-select {
+    border: 1px solid Grey;
+}
+
+md-select.md-default-theme .md-select-value.md-select-placeholder,
+md-select .md-select-value.md-select-placeholder {
+    color: rgba(0,0,0,0.60);
+    font-weight: bold;
+}
+
+md-content.md-default-theme, md-content .pad10 .panel .panel-body{
+	white-space: initial;
+}
+
+.json-formatter-row .string {
+    color: green;
+    white-space: initial;
+    word-wrap: break-word;
+}
+
+.required label {
+    font-weight: bold;
+}
+
+.required label:after {
+    color: #e32;
+    content: ' *';
+    display:inline;
+}
+
+.input-group-extend{
+    min-width:360px;
+}
+
+.input-group-addon-extend{
+    min-width:120px;
+    text-align: left;
+    padding-right: 0px;
+}
+
+.input-form-border {
+	border: 1px solid Grey;
+}
+
+.input-header-min-size{
+	min-width: 150px;
+}
+
+.input-header-min-size-small{
+	min-width: 145px;
+}
+
+.input-header-checkbox-min-size{
+	min-width: 130px;
+}
+
+/* override */
+md-dialog {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.dialog-http-detail-min-width{
+	min-width: 380px;
+}
+
+.dialog-mq-detail-min-width{
+	min-width: 280px;
+}
+
+.autocomplete-custom-template li {
+  height: auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  white-space: normal;
+}
+.autocomplete-custom-template li:last-child {
+  border-bottom-width: 0;
+}
+.autocomplete-custom-template .item-title,
+.autocomplete-custom-template .item-metadata {
+  display: block;
+  line-height: 2;
+}
+ 

@@ -1,0 +1,186 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="main"><i class="fa fa-home fa-fw"></i><span translate>menu.home</span></a></li>
+  <li class="active"><i class="fa fa-envelope fa-fw"></i><span translate>PT.SMS_SERVICE</span></li>
+  <li class="active"><i class="fa fa-line-chart fa-fw"></i><span translate>P.SMS_SERVICE_06</span></li>
+</ol>
+<div ng-controller="Sms.ReportCtrl">
+  <form name="SearchForm">
+    <div class="panel panel-primary margin-b-200" style="display:inline-block;" layout="column">
+   		<div class="panel-heading" layout="row" layout-align="space-between center">
+    		<span>SMS Report</span>
+    		<button type="button" id="refreshBtn" class="btn btn-xs btn-primary"
+				ng-click="refresh()">
+				<i class="fa fa-refresh fa-fw"></i>
+				<md-tooltip>{{'msg.refresh' | translate}}</md-tooltip>
+			</button>
+    	</div>
+    	
+    	<div name="upper" layout-gt-sm="row" layout="column" style="margin-top:10px;">
+    	
+	   	  <!-- entering the Report type -->  
+	      <div class="form-group input-limited pad10">
+            <div class="input-group">
+              <span class="input-group-addon input-group-addon-extend"><label class="margin-b-0">{{'sms.report.field.01'|translate}}</label></span>  
+              <select class="form-control" ng-model="searchRequest.reportType" name="reportType" ng-change="rptTypeChange()" required >
+                <option ng-selected="reportType.code === searchRequest.reportType" ng-repeat="reportType in reportTypeList" ng-value="reportType.code">{{reportType.text}}</option>
+              </select>
+            </div>  
+          </div>
+ 		
+ 		  <span class="pad10" hide-xs></span>
+
+	      <!-- entering the Date period -->  
+	      <div class="form-group input-limited pad10">
+            <div class="input-group">
+              <span class="input-group-addon input-group-addon-extend"><label class="margin-b-0">{{'sms.report.field.02'|translate}}</label></span>  
+              <select class="form-control" ng-model="searchRequest.datePeriod" name="datePeriod" ng-change="datePeriodChange()"  required>
+                <option ng-selected="datePeriod.code === searchRequest.datePeriod" ng-repeat="datePeriod in datePeriodList" ng-value="datePeriod.code">{{datePeriod.text}}</option>
+              </select>
+            </div>  
+          </div>
+      </div>
+      
+      <div name="middle" layout-gt-sm="row" layout="column"  ng-if="!showSelectionbox">	  
+	      <!-- entering the sysId -->  
+	      <div class="form-group input-group input-limited pad10">
+	         <span class="input-group-addon input-group-addon-extend"><label class="margin-b-0">{{'sms.report.field.03'|translate}}</label></span>  
+	         <input type="text"
+	          class="form-control" placeholder="SysId" name="sysId" required 
+	          ng-model="searchRequest.sysId"> </input>
+	      </div>
+	      
+   		  <span class="pad10" hide-xs></span>
+	      
+	      <!-- entering the SourceID -->  
+	      <div class="form-group input-group input-limited pad10" ng-if="showSourceId">
+	        <span class="input-group-addon input-group-addon-extend"><label class="margin-b-0">{{'sms.report.field.04'|translate}}</label></span>
+	        <input type="text"
+	          class="form-control" placeholder="SourceId" name="sourceId" required 
+	          ng-model="searchRequest.sourceId"></input>
+	      </div>
+	  </div>
+	  
+      <div name="middle2" layout-gt-sm="row" layout="column"  ng-if="showSelectionbox">	  
+	      <!-- Selection Box -->  
+	      <div class="form-group input-limited pad10">
+            <div class="input-group">
+              <span class="input-group-addon input-group-addon-extend"><label class="margin-b-0">{{'sms.report.field.05'|translate}}</label></span>  
+              <select class="form-control" ng-model="searchRequest.criteria" name="criteria"  required >
+                <option ng-selected="criteria.code === searchRequest.criteria" ng-repeat="criteria in criteriaList" ng-value="criteria.code">{{criteria.text}}</option>
+              </select>
+            </div>  
+          </div>
+	  </div>
+
+	    <div name="lower"  layout-gt-sm="row" layout="column" ng-if="searchRequest.datePeriod != 'M'">
+	    
+	      <!-- date picker 1 start date -->
+	       
+   	      <div class="form-group input-group input-limited pad10">
+	        <span class="input-group-addon input-group-addon-extend"><label class="margin-b-0">{{'sms.report.field.f'|translate}}</label></span>  
+	        <input type="text" class="form-control " uib-datepicker-popup ng-model="searchRequest.start" class="well well-sm" is-open="dateMstart.opened"  
+	         datepicker-options="startDateOptions" show-button-bar="false" required  ng-change="setDateRange()"/>
+   			 <span class="input-group-btn">
+			   <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+			 </span> 
+	      </div>	
+	       
+	      <span class="pad10" hide-xs></span>
+	      
+	      <!-- date picker 2 end date -->
+ 	      <div class="form-group input-group input-limited pad10">
+			  <span class="input-group-addon input-group-addon-extend"><label class="margin-b-0">{{'sms.report.field.t'|translate}}</label></span>  
+			  <input type="text" class="form-control " uib-datepicker-popup ng-model="searchRequest.end" class="well well-sm" is-open="dateMend.opened" 
+	        datepicker-options="endDateOptions" show-button-bar="false" required ng-change="setDateRange()"/>
+			  <span class="input-group-btn">
+			    <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+			  </span>
+	      </div>	
+
+        </div>
+        
+      	  <div name="lower2" layout-gt-sm="row" layout="column" ng-if="searchRequest.datePeriod == 'M'">
+	    
+	      <!-- date picker 1 start date for Month -->
+	      <div class="form-group input-group input-limited pad10">
+	        <span class="input-group-addon input-group-addon-extend"><label class="margin-b-0">From</label></span>  
+	        <input type="text" class="form-control" uib-datepicker-popup="MM/yyyy" ng-model="searchRequest.start" class="well well-sm" is-open="dateMstart.opened"  
+	         datepicker-options="startDateMonthOptions" show-button-bar="false" required  ng-change="setMDateRange()"/>
+   			 <span class="input-group-btn">
+			   <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+			 </span> 
+	      </div>	       
+ 
+	      <span class="pad10" hide-xs></span>
+	      
+	      <!-- date picker 2 end date for Month -->
+ 
+ 	      <div class="form-group input-group input-limited pad10">
+			  <span class="input-group-addon input-group-addon-extend"><label class="margin-b-0">To</label></span>  
+			  <input type="text" class="form-control " uib-datepicker-popup="MM/yyyy" ng-model="searchRequest.end" class="well well-sm" is-open="dateMend.opened" 
+	        datepicker-options="endDateMonthOptions" show-button-bar="false" required ng-change="setMDateRange()"/>
+			  <span class="input-group-btn">
+			    <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+			  </span>
+	      </div>	
+
+        </div>
+        
+   	    <div name="footer">
+   		  <div class="pad10" style="float: right;margin-bottom:10px;">
+    	    <button type="button" class="btn btn-primary" ng-disabled="SearchForm.$invalid"  ng-click="showReportDialog()">{{'sms.report.msg.01'|translate}}</button>
+		  </div>
+        </div>
+    </div>
+  </form>
+
+  <!--Report ng-if="searchClick"-->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="ReportDialog">
+    <md-dialog class="pad10">
+      <form>
+      
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" translate>{{'sms.report'|translate}}</h4>
+        </div>
+        
+        <div class="modal-body">
+          <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+          
+          <md-progress-circular ng-if="!reportReady" md-mode="indeterminate"></md-progress-circular>
+          
+          <md-dialog-content>
+      		<div class="md-dialog-content" >
+	      		<div class="panel">
+	          		<div ng-include="rptHtmlUrl" onload="reportReady = true"></div>
+				</div>
+			</div>
+		  </md-dialog-content>
+        </div>
+        
+        
+        <div class="modal-footer">
+	        <div layout="row" layout-align="space-between center">
+	           <div class="input-narrow">
+		            <div class="input-group">
+		              <span class="input-group-addon"><label class="margin-b-0">{{'sms.report.msg.02'|translate}}</label></span> 
+		              <select class="form-control" ng-model="downloadFormat" name="downloadFormat" required>
+		                <option ng-selected="downloadFormat === format.code" ng-repeat="format in reportFormat" ng-value="format.code">{{format.text}}</option>
+		              </select>
+		            </div>  
+	          </div>
+	        
+	          <button type="button" class="btn btn-primary" ng-click="downloadRpt()">{{'sms.report.msg.03'|translate}}</button>
+	        </div>
+        </div>
+        
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+  
+  
+</div>

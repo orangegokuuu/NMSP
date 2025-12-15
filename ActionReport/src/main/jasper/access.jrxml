@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="access" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="32879893-d95d-4d96-b87c-5ad17e3e9f82">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MSP"/>
+	<property name="net.sf.jasperreports.print.keep.full.text" value="TRUE"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="msp" uuid="071922d7-ceb7-43bc-8d3f-f5f5dd400a18">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MSP"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<parameter name="targetDate" class="java.lang.String">
+			<parameterDescription><![CDATA[]]></parameterDescription>
+		</parameter>
+		<queryString>
+			<![CDATA[select TO_CHAR(s1.ACTION_DATE, 'YYYY-MM-DD HH24:MI:SS') ,
+s1.ACTION_TYPE ,
+s1.DONE_BY ,
+s1.STATUS,
+s2.IP_ADDRESS 
+from COM_ACTION_LOG s1
+ left outer join COM_USER_SESSION s2
+  on s1.SESSION_ID = s2.SESSION_ID
+   where s1.ACTION_TYPE in ('MC10001','MC10002') and s1.ACTION_DATE
+between TRUNC(TO_DATE($P{targetDate}, 'yyyyMMddHH24MI') , 'HH24') 
+and TRUNC(TO_DATE($P{targetDate}, 'yyyyMMddHH24MI') +1/24, 'HH24')
+order by s1.ACTION_DATE ASC]]>
+		</queryString>
+		<field name="TO_CHAR(S1.ACTION_DATE,&apos;YYYY-MM-DDHH24:MI:SS&apos;)" class="java.lang.String"/>
+		<field name="ACTION_TYPE" class="java.lang.String"/>
+		<field name="DONE_BY" class="java.lang.String"/>
+		<field name="STATUS" class="java.lang.String"/>
+		<field name="IP_ADDRESS" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="targetDate" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select 1 from dual]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="60" splitType="Stretch">
+			<componentElement>
+				<reportElement x="0" y="0" width="550" height="30" uuid="aaf4d0c4-795f-452d-b126-34448d7c2c36">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="com.jaspersoft.studio.components.autoresize.proportional" value="true"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="msp" uuid="953ba01c-6054-4a28-b07f-7eabf76138b0">
+						<datasetParameter name="targetDate">
+							<datasetParameterExpression><![CDATA[$P{targetDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="67" uuid="1b3cd5a1-6a71-4771-9bf9-e5e5da470da1">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="67" height="30" uuid="7f4b9a09-7ec0-47b8-86ec-918353b730a2"/>
+								<box padding="2"/>
+								<textFieldExpression><![CDATA[$F{DONE_BY}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="122" uuid="253af5ae-e4c4-40e1-91dd-2fed42925fb1">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="122" height="30" uuid="5ca9e629-6275-422f-8c4d-e37a18d7ede6"/>
+								<box padding="2"/>
+								<textFieldExpression><![CDATA[$F{IP_ADDRESS}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="78" uuid="4f40a680-c8f1-4517-83d0-bdb906c819d4">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="78" height="30" uuid="323587aa-b874-4608-99c0-025d50ecbe30"/>
+								<box padding="2"/>
+								<textFieldExpression><![CDATA[$F{ACTION_TYPE}.matches( "MC10001" )?"LI":null]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="132" uuid="62efdfd3-c25e-4e23-92d3-849bbff722cb">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="132" height="30" uuid="b169cf4b-dc4b-4aeb-bf84-134a8a71c973"/>
+								<box padding="2"/>
+								<textFieldExpression><![CDATA[$F{TO_CHAR(S1.ACTION_DATE,'YYYY-MM-DDHH24:MI:SS')}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="87" uuid="6d1e5d19-dc8a-44cc-8fa6-5e5d0aa5b27c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="87" height="30" uuid="c43ff993-6e68-4942-89d3-2e5701a15817"/>
+								<box padding="2"/>
+								<textFieldExpression><![CDATA[null]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="64" uuid="74897165-dda8-4418-bd03-b9ded611d580">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="64" height="30" uuid="8232fef4-1a83-4bc2-80ca-7107e77c21dc"/>
+								<box padding="2"/>
+								<textFieldExpression><![CDATA[$F{STATUS}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,129 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="main"><i class="fa fa-home fa-fw"></i><span translate>menu.home</span></a></li>
+  <li class="active"><i class="fa fa-user-circle fa-fw"></i><span translate>main.profile.msg.01</span></li>
+</ol>
+<div layout="column" ng-controller="AuthCtrl">
+  <div layout-gt-md="row" layout="column">
+    <div layout-gt-sm="row" layout="column">
+      <div class="pad10">
+        <div class="panel panel-primary" style="max-width: 400px">
+          <div class="panel-heading" translate>main.profile.msg.01</div>
+          <table class="table">
+            <thead>
+              <tr>
+                <td><span translate>user.user.msg.03</span></td>
+                <td>{{userSession.user.userId}}</td>
+              </tr>
+              <tr>
+                <td><span translate>user.user.msg.04</span></td>
+                <td>{{userSession.user.userName}}</td>
+              </tr>
+              <tr>
+                <td><span translate>user.user.msg.06</span></td>
+                <td><span ng-class="userSession.user.status=='A'?'alert alert-success':'alert alert-danger'"
+                  translate>{{'user.status.'+userSession.user.status}}</span></td>
+              </tr>
+              <tr>
+                <td><span translate>user.user.msg.05</span></td>
+                <td>{{userSession.role.roleName}}</td>
+              </tr>
+              <tr>
+                <td><span translate>user.user.msg.19</span></td>
+                <td>{{userSession.user.group.groupName}}</td>
+              </tr>
+              <tr>
+                <td><span translate>user.user.msg.08</span></td>
+                <td>{{userSession.user.createDate}}</td>
+              </tr>
+              <tr>
+                <td><span translate>user.user.msg.13</span></td>
+                <td>{{userSession.user.createBy}}</td>
+              </tr>
+              <tr>
+                <td><span translate>user.user.msg.07</span></td>
+                <td>{{userSession.logonDate}}</td>
+              </tr>
+            </thead>
+          </table>
+          <div class="btn btn-danger" ng-click="logout()">
+            <span translate>menu.item.logout</span>
+          </div>
+
+        </div>
+      </div>
+      <!-- Password Update Form -->
+      <div class="pad10" ng-controller="MainCtrl">
+        <form name="passwordForm" ng-submit="updatePassword(credentials)" form-autofill-fix>
+          <div class="panel panel-primary" style="max-width: 400px">
+            <div class="panel-heading" translate>auth.login.msg.05</div>
+            <div class="panel-body" layout="column">
+              <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+              <div ng-if="Message" class="alert alert-success">{{ Message | translate}}</div>
+              <div class="form-group input-narrow">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span> <input type="password"
+                    class="form-control"  placeholder="{{'auth.login.msg.06' | translate}}" name="newPassword"
+                    ng-model="credentials.newPassword"  ng-required="true" validatepwd />
+                </div>
+              </div>
+
+
+              <div class="form-group input-narrow">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span> <input type="password"
+                    class="form-control" placeholder="{{'auth.login.msg.07' | translate}}" name="conPassword"
+                    ng-model="conPassword"  ng-required="true" match="credentials.newPassword" />
+                </div>
+              </div>
+  
+  
+			  <div  ng-messages="passwordForm.newPassword.$error" class="input-narrow">
+			    <div class="alert alert-danger" ng-show="passwordForm.newPassword.$dirty" ng-message="required"
+                translate>auth.login.err.12</div>
+			  	<div class="alert alert-danger" ng-show="passwordForm.newPassword.$dirty" ng-message="lowercaseValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.lowercase_req}} {{'auth.login.msg.20b'|translate}}</div>
+				<div class="alert alert-danger" ng-show="passwordForm.newPassword.$dirty" ng-message="uppercaseValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.uppercase_req}} {{'auth.login.msg.20c'|translate}}</div>
+				<div class="alert alert-danger" ng-show="passwordForm.newPassword.$dirty" ng-message="specialValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.special_req}} {{'auth.login.msg.20d'|translate}}</div>
+				<div class="alert alert-danger" ng-show="passwordForm.newPassword.$dirty" ng-message="numberValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.num_req}} {{'auth.login.msg.20e'|translate}}</div>
+			    <div class="alert alert-danger" ng-show="passwordForm.newPassword.$dirty" ng-message="lengthValidator">{{'auth.login.msg.20a'|translate}} {{"["+ pwdConfig.pwd_minL+ "-" + pwdConfig.pwd_maxL +"]"}} {{'auth.login.msg.20f'|translate}}</div>
+			  </div>
+
+ 		      <div  ng-messages="passwordForm.conPassword.$error" class="input-narrow">
+	              <div class="alert alert-danger" ng-show="passwordForm.$dirty" ng-message="match"
+	                translate>auth.login.err.10</div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" ng-disabled="passwordForm.$invalid" translate>msg.submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="pad10" flex>
+      <div class="panel panel-primary" style="max-width: 600px">
+        <div class="panel-heading" translate>user.role.msg.07</div>
+        <div class="panel-body">
+          <table class="table">
+            <tbody ng-repeat="type in privilegeType">
+              <tr>
+                <td><i class="fa {{type.icon}} fa-fw"></i> <span hide-sm hide-xs>{{type.labels[locale].typeName}}</span>
+                  <md-tooltip>{{type.labels[locale].typeName}}</md-tooltip></td>
+                <td ng-show="{{$index == 0}}"><span class="label label-success" translate>user.role.msg.08</span></td>
+                <td ng-show="{{$index == 0}}"><span class="label label-danger" translate>user.role.msg.09</span></td>
+                <td ng-show="{{$index == 0}}"><span class="label label-warning" translate>user.role.msg.10</span></td>
+              </tr>
+              <tr ng-repeat="p in type.privileges">
+                <td><i class="fa {{p.icon}} fa-fw"></i> <span hide-sm hide-xs>{{p.labels[locale].privilegeName}}</span>
+                  <md-tooltip>{{p.labels[locale].privilegeName}}</md-tooltip></td>
+                <td><md-checkbox ng-checked="userSession.role.rmap[p.privilegeId].readEnable" ng-disabled="true"
+                    aria-label="R"></md-checkbox></td>
+                <td><md-checkbox ng-checked="userSession.role.rmap[p.privilegeId].writeEnable" ng-disabled="true"
+                    aria-label="W"></md-checkbox></td>
+                <td><md-checkbox ng-checked="userSession.role.rmap[p.privilegeId].otherEnable" ng-disabled="true"
+                    aria-label="E"></md-checkbox></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

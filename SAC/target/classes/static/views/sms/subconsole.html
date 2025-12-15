@@ -1,0 +1,141 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="main"><i class="fa fa-home fa-fw"></i><span translate>menu.home</span></a></li>
+  <li class="active"><i class="fa fa-envelope fa-fw"></i><span translate>PT.SMS_SERVICE</span></li>
+  <li class="active"><i class="fa fa-user-circle-o fa-fw"></i><span translate>P.SMS_SERVICE_07</span></li>
+</ol>
+
+<div ng-controller='Sms.SubConsoleCtrl'>
+  <div class="panel panel-primary">
+    <div class="panel-heading" layout="row" layout-align="space-between center">
+      <span translate>P.SMS_SERVICE_07</span>
+      <div class="btn-group">
+      <button id="refreshBtn" class="btn btn-xs btn-primary " ng-click="refreshGrid()">
+        <i class="fa fa-refresh fa-fw"></i>
+        <md-tooltip>{{'msg.refresh' | translate}}</md-tooltip>
+      </button>
+      <button id="addUserBtn" class="btn btn-xs btn-primary " ng-click="showCreateForm()" privilege="USER_01:write">
+        <i class="fa fa-plus-square fa-fw"></i>
+        <md-tooltip>{{'msg.add' | translate}}</md-tooltip>
+      </button>
+      <button id="editUserBtn" class="btn btn-xs btn-primary" ng-click="showUpdateForm()" ng-disabled="enableEdit!=true" privilege="USER_01:write">
+        <i class="fa fa-pencil-square fa-fw"></i>
+        <md-tooltip>{{'msg.modify' | translate}}</md-tooltip>
+      </button>
+      </div>
+    </div>
+    <div ag-grid="grid" style="height: 380px; width: 99.9%;" class="ag-fresh"></div>
+  </div>
+    <!-- Create Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="CreateDialog">
+    <md-dialog>
+      <form name="CreateForm" ng-submit="create(user)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Create New Sub User</h4>
+        </div>
+        <div class="modal-body">
+          <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'user.user.msg.03' | translate}}" name="userId"
+                ng-model="user.userId" ng-required="true"></input>
+            </div>
+          </div>
+          <div class="alert alert-danger" ng-show="CreateForm.$dirty && CreateForm.userId.$error.required" translate>user.user.err.01</div>
+          
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'user.user.msg.04' | translate}}" name="userName"
+                ng-model="user.userName" autocomplete="false" />
+            </div>    
+          </div>
+          
+        <div class="form-group input-narrow">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span> 
+            <input type="password" class="form-control" placeholder="{{'user.user.msg.10' | translate}}" 
+            name="userPass" ng-model="user.password" ng-required="true" autocomplete="new-password"/>
+          </div>  
+        </div>
+        
+	  <div  ng-messages="CreateForm.userPass.$error" ng-show="CreateForm.userPass.$dirty" class="input-narrow">
+	    <div class="alert alert-danger" ng-message="required" translate>auth.login.err.12</div>
+	  </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" ng-disabled="CreateForm.$invalid" translate>msg.save</button>
+        </div>
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+  
+  <!-- Update Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="UpdateDialog">
+    <md-dialog>
+      <form name="UpdateForm" ng-submit="update(user)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Update User</h4>
+        </div>
+        <div class="modal-body">
+          <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'user.user.msg.03' | translate}}" name="userId"
+                ng-model="user.userId" ng-required="true" disabled></input>
+            </div>
+          </div>
+          <div class="alert alert-danger" ng-show="CreateForm.$dirty && CreateForm.userId.$error.required" translate>user.user.err.01</div>
+          
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'user.user.msg.04' | translate}}" name="userName"
+                ng-model="user.userName" autocomplete="false" />
+            </div>    
+          </div>
+          <div class="form-group input-narrow" ng-if="allowStatusEdit">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-power-off fa-fw"></i></span>
+              <select class="form-control" ng-model="user.status" name="status" required>
+                <option ng-selected="user.status == status.value" ng-repeat="status in statusFilter" ng-value="status.value">{{status.label | translate}}</option>
+              </select>
+            </div>  
+          </div>
+          <hr class="divider"></hr>
+          
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <div class="input-group-addon fa-fw"><input type="checkbox" ng-model="updatePass"></div>
+              <input type="password" class="form-control" placeholder="Update Password" name="userPass"
+                ng-model="user.password"  ng-required="updatePass && true" autocomplete="new-password" />
+            </div>    
+          </div>
+          <div class="alert alert-danger" ng-show="updatePass && UpdateForm.userPass.$error.minlength" translate>user.user.msg.15</div>
+          <div class="alert alert-danger" ng-show="updatePass && UpdateForm.userPass.$error.maxlength" translate>user.user.msg.15</div>
+        </div>
+        <div class="modal-footer">
+          <div style="float:left;">
+            <button type="button" class="btn btn-danger" ng-click="confirmDelete(user)" translate>msg.del</button>
+          </div>
+          <div style="float:right;">
+            <button type="submit" class="btn btn-primary" ng-disabled="UpdateForm.$invalid" translate>msg.save</button>
+          </div>
+        </div>
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+  
+</div>

@@ -1,0 +1,108 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="main"><i class="fa fa-home fa-fw"></i><span translate>menu.home</span></a></li>
+  <li class="active"><i class="fa fa-server fa-fw"></i><span translate>PT.SYSTEM</span></li>
+  <li class="active"><i class="fa fa-gear fa-fw"></i><span translate>P.SYSTEM_01</span></li>
+</ol>
+
+<div class="panel panel-primary" ng-controller="System.ParamCtrl">
+  <div class="panel-heading" layout="row" layout-align="space-between center">
+    <span translate>P.SYSTEM_01</span>
+    <div class="btn-group">
+      <button id="refreshBtn" class="btn btn-xs btn-primary " ng-click="refreshGrid()">
+        <i class="fa fa-refresh fa-fw"></i>
+        <md-tooltip>{{'msg.refresh' | translate}}</md-tooltip>
+      </button>
+      <button id="editBtn" class="btn btn-xs btn-primary" ng-click="showUpdateForm()"
+        ng-disabled="!enableEdit" privilege="SYSTEM_01:write">
+        <i class="fa fa-pencil-square fa-fw"></i>
+        <md-tooltip>{{'msg.modify' | translate}}</md-tooltip>
+      </button>
+    </div>
+  </div>
+  
+  <div ag-grid="grid" style="height: 300px; width: 99.9%;" class="ag-fresh"></div>
+
+  <!-- Update Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="UpdateDialog">
+    <md-dialog>
+      <form name="UpdateForm" ng-submit="update(param)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" translate>sys.param.msg.14</h4>
+        </div>
+        <div class="modal-body">
+          <div ng-if="!param.editable" class="alert alert-warning" translate>sys.param.err.01</div>
+          <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+          <div class="form-group input-medium">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{param.labels[userSession.locale].paramName}}" name="labels"
+                ng-model="param.labels[userSession.locale].paramName" ng-disabled="true"/>
+            </div>
+          </div>
+          
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-server fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{param.type}}" name="type"
+                ng-model="param.type" ng-disabled="true"/>
+            </div>
+          </div>
+          
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-gear fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{param.paramId}}" name="paramId"
+                ng-model="param.paramId" ng-disabled="true"/>
+            </div>
+          </div>
+          
+          <div class="form-group input-narrow" ng-if="param.valueType == 'INT'">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-fw">#</i></span>
+              <input type="number" class="form-control" placeholder="{{'sys.param.msg.05' | translate}}" name="value"
+                ng-model="param.value" ng-minlength="1" ng-maxlength="{{param.valueSize == 0?100:param.valueSize}}" 
+                ng-disabled="{{!param.editable}}"/>
+            </div>    
+            <div class="alert alert-danger" ng-show="UpdateForm.value.$error.maxlength" translate translate-value-max="{{param.valueSize}}">sys.param.err.06</div>
+          </div>
+          <div class="form-group input-narrow" ng-if="param.valueType == 'STR'">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-font fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'sys.param.msg.05' | translate}}" name="value"
+                ng-model="param.value" ng-minlength="1" ng-maxlength="{{param.valueSize == 0?100:param.valueSize}}" 
+                ng-disabled="{{!param.editable}}"/>
+            </div>    
+            <div class="alert alert-danger" ng-show="UpdateForm.value.$error.maxlength" translate translate-value-max="{{param.valueSize}}">sys.param.err.06</div>
+          </div>
+          <div class="form-group input-narrow" ng-if="param.valueType == 'BOOL'">
+            <div class="input-group">
+              <span class="input-group-addon"><input class="fa fa-fw" type="checkbox" ng-model="param.value" ng-true-value="'YES'" ng-false-value="'NO'" ng-disabled="{{!param.editable}}"/></span>
+              <input type="text" class="form-control" placeholder="{{param.value}}" name="paramValue" ng-disabled="true"/>
+            </div>    
+          </div>
+          <div class="form-group input-narrow" ng-if="param.valueType == 'URL'">
+            <div class="input-group input-medium"">
+              <span class="input-group-addon"><i class="fa fa-link fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'sys.param.msg.05' | translate}}" name="value"
+                ng-model="param.value" ng-minlength="1" ng-maxlength="{{param.valueSize == 0?100:param.valueSize}}" 
+                ng-disabled="{{!param.editable}}"/>
+            </div>    
+            <div class="alert alert-danger" ng-show="UpdateForm.value.$error.maxlength" translate translate-value-max="{{param.valueSize}}">sys.param.err.06</div>
+          </div>
+          
+        </div>
+        
+        <div class="modal-footer">
+          <div style="float:right;">
+            <button type="submit" class="btn btn-primary" ng-disabled="UpdateForm.$invalid || !param.editable" translate>msg.save</button>
+          </div>  
+        </div>
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+</div>

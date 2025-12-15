@@ -1,0 +1,125 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="main"><i class="fa fa-home fa-fw"></i><span translate>menu.home</span></a></li>
+  <li class="active"><i class="fa fa-user-o fa-fw"></i><span translate>PT.USER</span></li>
+  <li class="active"><i class="fa fa-users fa-fw"></i><span translate>P.USER_03</span></li>
+</ol>
+
+<div class="panel panel-primary" ng-controller="User.GroupCtrl">
+  <div class="panel-heading" layout="row" layout-align="space-between center">
+    <span>Administrators</span>
+    <div class="btn-group">
+      <button id="refreshBtn" class="btn btn-xs btn-primary " ng-click="refreshGrid()">
+        <i class="fa fa-refresh fa-fw"></i>
+        <md-tooltip>{{'msg.refresh' | translate}}</md-tooltip>
+      </button>
+      <button id="addBtn" class="btn btn-xs btn-primary " ng-click="showCreateForm()"
+       privilege="USER_03:write" >
+        <i class="fa fa-plus-square fa-fw"></i>
+        <md-tooltip>{{'msg.add' | translate}}</md-tooltip>
+      </button>
+      <button id="editBtn" class="btn btn-xs btn-primary" ng-click="showUpdateForm()"
+        ng-disabled="!enableEdit" privilege="USER_03:write">
+        <i class="fa fa-pencil-square fa-fw"></i>
+        <md-tooltip>{{'msg.modify' | translate}}</md-tooltip>
+      </button>
+    </div>
+  </div>
+  
+  <div ag-grid="grid" style="height: 300px; width: 99.9%;" class="ag-fresh"></div>
+
+  <!-- Create Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="CreateDialog">
+    <md-dialog>
+      <form name="CreateForm" ng-submit="create(group)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Create New Group</h4>
+        </div>
+        <div class="modal-body">
+          <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-users fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'user.group.msg.03' | translate}}" name="groupId"
+                ng-model="group.groupId" ng-required="true"></input>
+            </div>
+          </div>
+          <div class="alert alert-danger" ng-show="CreateForm.$dirty && CreateForm.groupId.$error.required" translate>user.group.err.01</div>
+          
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'user.group.msg.04' | translate}}" name="groupName"
+                ng-model="group.groupName" ng-minlength="3" ng-maxlength="60" />
+            </div>    
+          </div>
+          <div class="alert alert-danger" ng-show="CreateForm.groupName.$error.minlength" translate>user.group.err.06</div>
+          <div class="alert alert-danger" ng-show="CreateForm.groupName.$error.maxlength" translate>user.group.err.06</div>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" ng-disabled="CreateForm.$invalid">Save changes</button>
+        </div>
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+  
+  <!-- Update Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="UpdateDialog">
+    <md-dialog>
+      <form name="UpdateForm" ng-submit="update(group)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Update Group</h4>
+        </div>
+        <div class="modal-body">
+          <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-users fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{group.groupId}}" name="groupId"
+                ng-model="group.groupId" ng-disabled="true"/>
+            </div>
+          </div>
+          <div class="alert alert-danger" ng-show="UpdateForm.$dirty && UpdateForm.groupId.$error.required" translate>user.group.err.01</div>
+          
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'user.group.msg.04' | translate}}" name="groupName"
+                ng-model="group.groupName" ng-minlength="3" ng-maxlength="60" />
+            </div>    
+          </div>
+          <div class="alert alert-danger" ng-show="UpdateForm.groupName.$error.minlength" translate>user.group.err.06</div>
+          <div class="alert alert-danger" ng-show="UpdateForm.groupName.$error.maxlength" translate>user.group.err.06</div>
+          
+          <div class="form-group input-narrow" ng-if="allowStatusEdit">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-power-off fa-fw"></i></span>
+              <select class="form-control" ng-model="group.groupStatus" name="status" required>
+                <option ng-selected="group.groupStatus == status.code" ng-repeat="status in statuses" ng-value="status.code">{{status.text}}</option>
+              </select>
+            </div>  
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <div style="float:left;">
+            <button type="button" class="btn btn-danger" ng-click="confirmDelete(group)">Delete</button>
+          </div>
+          <div style="float:right;">
+            <button type="submit" class="btn btn-primary" ng-disabled="UpdateForm.$invalid">Save changes</button>
+          </div>  
+        </div>
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,89 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="main"><i class="fa fa-home fa-fw"></i><span translate>menu.home</span></a></li>
+  <li class="active"><i class="fa fa-envelope fa-fw"></i><span translate>PT.SMS_SERVICE</span></li>
+  <li class="active"><i class="fa fa-book fa-fw"></i><span translate>P.SMS_SERVICE_02</span></li>
+</ol>
+
+<div ng-controller='Sms.RecordCtrl'>
+  <div class="panel panel-primary">
+    <div class="panel-heading" layout="row" layout-align="space-between center">
+      <span translate>P.SMS_SERVICE_02</span>
+      <div class="btn-group">
+        <button id="refreshBtn" class="btn btn-xs btn-primary " ng-click="refreshGrid()">
+          <i class="fa fa-refresh fa-fw"></i>
+          <md-tooltip>{{'msg.refresh' | translate}}</md-tooltip>
+        </button>
+        <button id="exportBtn" class="btn btn-xs btn-primary " ng-click="exportCSV()" privilege="SMS_SERVICE_02:other">
+          <i class="fa fa-save fa-fw"></i>
+          <md-tooltip>{{'msg.export.csv' | translate}}</md-tooltip>
+        </button>
+      </div>
+    </div>
+    <div ag-grid="grid" style="height: 280px; width: 99.9%;" class="ag-fresh"></div>
+  </div>
+  
+  <!-- Record content -->
+  <div layout="column" layout-gt-sm="row" ng-show="detail != null">
+    <div class="panel panel-primary" ng-show="userSession.rights['SUPER'].readEnable" style="width: 99.9%;">
+      <div class="panel-heading" translate>{{'sms.hist.field.45'|translate}}</div>
+      <div class="panel-body" style="word-break: break-word;" >
+        <span  translate>{{detail.text}}</span>
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="panel panel-primary" ng-show="detail != null">
+	  <div class="panel-heading" layout="row" layout-align="space-between center">
+	     <span translate>{{'sms.hist.field.44' | translate}}</span>
+	     <div class="btn-group">
+	        <button id="refreshSubBtn" class="btn btn-xs btn-primary " ng-click="refreshGridSub()">
+	          <i class="fa fa-refresh fa-fw"></i>
+	          <md-tooltip>{{'msg.refresh' | translate}}</md-tooltip>
+	        </button>
+        </div>
+	   </div>
+	   <div ag-grid="gridSub" style="height: 280px; width: 99.9%;" class="ag-fresh"></div>
+  </div>
+
+   
+    <!-- View Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="UpdateDialog">
+    <md-dialog class="pad10">
+      <form name="UpdateForm" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" translate>sms.hist.field.46</h4>
+        </div>
+        <md-dialog-content layout="column">
+            <div id="left" class="panel panel-primary" style="min-height:150px;">
+              <div class="panel-heading" translate>sms.hist.field.47</div>
+              <md-content flex layout="column" class="pad10">
+                 <table class="table" style="margin-top:15px">
+                  <tbody ng-repeat="(key,val) in detail" ng-if ="$index > 3">
+                    <tr>
+                        <td>
+                            <span>{{key}}</span>
+
+                        </td>
+                        <td>:</td>
+                        <td>
+                            <span><json-formatter open="0" json="val" style="white-space: initial;"></json-formatter></md-tooltip>
+                        </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </md-content>
+            </div>
+         
+          </div>
+        </md-dialog-content>  
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+  
+</div>

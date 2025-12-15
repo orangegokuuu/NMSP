@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+	<Properties>
+		<!-- 
+		<property name="LOG_PATH">/data/msp/logs</property>
+		 -->
+	</Properties>
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%-5level %d{HH:mm:ss.SSS} [%-50logger{1.}] - %msg%n" />
+		</Console>
+		<!-- 
+		<RollingFile name="IBMMQClientLog" fileName="${LOG_PATH}/ibmMqClient.log"
+			filePattern="${LOG_PATH}/ibmMqClient.log.%d{yyyy-MM-dd}">
+			<PatternLayout
+				pattern="%-5p %d{yyyyMMdd HH:mm:ss.SSS} [%-40c{1.}].[%-20M]:%-5L - %msg%n" />
+			<TimeBasedTriggeringPolicy />
+		</RollingFile>
+		 -->
+	</Appenders>
+	<Loggers>
+		<Root level="DEBUG">
+			<AppenderRef ref="Console" />
+			<!-- <AppenderRef ref="IBMMQClientLog" /> -->
+		</Root>
+		<Logger name="org.springframework" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.infinispan" level="error" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="com.mchange" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.hibernate" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.crsh" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.apache.tomcat" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.apache.catalina" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.apache.coyote.http11" level="INFO" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+	</Loggers>
+</Configuration>
+

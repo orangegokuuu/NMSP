@@ -1,0 +1,197 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="main"><i class="fa fa-home fa-fw"></i><span translate>menu.home</span></a></li>
+  <li class="active"><i class="fa fa-server fa-fw"></i><span translate>PT.SYSTEM</span></li>
+  <li class="active"><i class="fa fa-envelope fa-fw"></i><span translate>P.SYSTEM_02</span></li>
+</ol>
+<div class="panel panel-primary" ng-controller="System.TemplateCtrl">
+  <div class="panel-heading" layout="row" layout-align="space-between center">
+    <span translate>P.SYSTEM_02</span>
+    <div class="btn-group">
+      <button id="refreshBtn" class="btn btn-xs btn-primary " ng-click="refreshGrid()">
+        <i class="fa fa-refresh fa-fw"></i>
+        <md-tooltip><span translate>msg.refresh</span></md-tooltip>
+      </button>
+      <button id="addBtn" class="btn btn-xs btn-primary" ng-click="showCreateForm()"
+        privilege="SYSTEM_02:write">
+        <i class="fa fa-plus-square fa-fw"></i>
+        <md-tooltip><span translate>msg.add</span></md-tooltip>
+      </button>
+      <button id="editBtn" class="btn btn-xs btn-primary" ng-click="showUpdateForm()"
+        ng-disabled="!enableEdit" privilege="SYSTEM_02:write">
+        <i class="fa fa-pencil-square fa-fw"></i>
+        <md-tooltip><span translate>msg.modify</span></md-tooltip>
+      </button>
+    </div>
+  </div>
+  <div ag-grid="grid" style="height: 300px; width: 99.9%;" class="ag-fresh"></div>
+  <!-- Create Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="CreateDialog">
+      <md-dialog>
+      <form name="CreateForm" ng-submit="create(template)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Create New Template</h4>
+        </div>
+        <md-dialog-content class="pad10"> <!-- Basic Information -->
+        <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+        <div layout-gt-sm="row" layout="column">
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-envelope fa-fw"></i></span> <input type="text"
+                ng-required="true" class="form-control" placeholder="{{'sys.msg.msg.02' | translate}}" name="messageId"
+                ng-model="template.messageId" />
+            </div>
+          </div>
+          <div hide-sm hide-xs class="pad10"></div>
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span> <select class="form-control"
+                ng-model="template.messageType" ng-options="type.code as type.text for type in mTypes"
+                ng-required="true">
+                <option value="" disabled selected>{{'sys.msg.msg.03' | translate}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- English Section -->
+        <div layout="column">
+          <div class="form-group">
+            <div class="input-group input-narrow">
+              <span class="input-group-addon"><span class="flag-icon flag-icon-us"></span></span> <input type="text"
+                class="form-control" placeholder="{{'sys.msg.msg.04' | translate}}" name="enName"
+                ng-model="template.messageBody['en'].name" ng-required="true" />
+            </div>
+            <div hide-gt-sm>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}" ta-toolbar="{{toolbarSmall}}"
+                ng-model="template.messageBody['en'].bodyText" ng-if="template.messageType == 'EMAIL'"></text-angular>
+            </div>
+            <div hide-sm hide-xs>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}"
+                ng-model="template.messageBody['en'].bodyText" ng-if="template.messageType == 'EMAIL'"></text-angular>
+            </div>
+            <div>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}" ta-toolbar="{{toolbarSMS}}"
+                ng-model="template.messageBody['en'].bodyText" ng-if="template.messageType != 'EMAIL'"></text-angular>
+            </div>
+          </div>
+        </div>
+        <div class="pad10"></div>
+        <!-- Chinese Section -->
+        <div layout="column">
+          <div class="form-group">
+            <div class="input-group input-narrow"">
+              <span class="input-group-addon"><span class="flag-icon flag-icon-hk"></span></span> <input type="text"
+                class="form-control" placeholder="{{'sys.msg.msg.04' | translate}}" name="zhName"
+                ng-model="template.messageBody['zh-TW'].name" ng-required="true" />
+            </div>
+            <div hide-gt-sm>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}" ta-toolbar="{{toolbarSmall}}"
+                ng-model="template.messageBody['zh-TW'].bodyText" ng-if="template.messageType == 'EMAIL'"></text-angular>
+            </div>
+            <div hide-sm hide-xs>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}"
+                ng-model="template.messageBody['zh-TW'].bodyText" ng-if="template.messageType == 'EMAIL'"></text-angular>
+            </div>
+            <div>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}" ta-toolbar="{{toolbarSMS}}"
+                ng-model="template.messageBody['zh-TW'].bodyText" ng-if="template.messageType != 'EMAIL'"></text-angular>
+            </div>
+          </div>
+        </div>
+        </md-dialog-content>
+        <md-dialog-actions>
+        <button type="submit" class="btn btn-primary" ng-disabled="CreateForm.$invalid" translate>msg.save</button>
+        </md-dialog-actions>
+      </form>
+      </md-dialog>
+    </div>
+  </div>
+  <!-- Update Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="UpdateDialog">
+      <md-dialog>
+      <form name="UpdateForm" ng-submit="update(template)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Update Template</h4>
+        </div>
+        <md-dialog-content class="pad10"> <!-- Basic Information -->
+        <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+        <div layout-gt-sm="row" layout="column">
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-envelope fa-fw"></i></span> <input type="text"
+                ng-required="true" class="form-control" placeholder="{{'sys.msg.msg.02' | translate}}" name="messageId"
+                ng-model="template.messageId" ng-disabled />
+            </div>
+          </div>
+          <div hide-sm hide-xs class="pad10"></div>
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span> <select class="form-control"
+                ng-model="template.messageType" ng-options="type.code as type.text for type in mTypes"
+                ng-required="true">
+                <option value="" disabled selected>{{'sys.msg.msg.03' | translate}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- English Section -->
+        <div layout="column">
+          <div class="form-group">
+            <div class="input-group input-narrow">
+              <span class="input-group-addon"><span class="flag-icon flag-icon-us"></span></span> <input type="text"
+                class="form-control" placeholder="{{'sys.msg.msg.04' | translate}}" name="enName"
+                ng-model="template.messageBody['en'].name" ng-required="true" />
+            </div>
+            <div hide-gt-sm>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}" ta-toolbar="{{toolbarSmall}}"
+                ng-model="template.messageBody['en'].bodyText" ng-if="template.messageType == 'EMAIL'"></text-angular>
+            </div>
+            <div hide-sm hide-xs>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}"
+                ng-model="template.messageBody['en'].bodyText" ng-if="template.messageType == 'EMAIL'"></text-angular>
+            </div>
+            <div>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}" ta-toolbar="{{toolbarSMS}}"
+                ng-model="template.messageBody['en'].bodyText" ng-if="template.messageType != 'EMAIL'"></text-angular>
+            </div>
+          </div>
+        </div>
+        <div class="pad10"></div>
+        <!-- Chinese Section -->
+        <div layout="column">
+          <div class="form-group">
+            <div class="input-group input-narrow"">
+              <span class="input-group-addon"><span class="flag-icon flag-icon-hk"></span></span> <input type="text"
+                class="form-control" placeholder="{{'sys.msg.msg.04' | translate}}" name="zhName"
+                ng-model="template.messageBody['zh-TW'].name" ng-required="true" />
+            </div>
+            <div hide-gt-sm>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}" ta-toolbar="{{toolbarSmall}}"
+                ng-model="template.messageBody['zh-TW'].bodyText" ng-if="template.messageType == 'EMAIL'"></text-angular>
+            </div>
+            <div hide-sm hide-xs>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}"
+                ng-model="template.messageBody['zh-TW'].bodyText" ng-if="template.messageType == 'EMAIL'"></text-angular>
+            </div>
+            <div>
+              <text-angular placeholder="{{'sys.msg.msg.05' | translate}}" ta-toolbar="{{toolbarSMS}}"
+                ng-model="template.messageBody['zh-TW'].bodyText" ng-if="template.messageType != 'EMAIL'"></text-angular>
+            </div>
+          </div>
+        </div>
+        </md-dialog-content>
+        <md-dialog-actions>
+        <button type="submit" class="btn btn-primary" ng-disabled="CreateForm.$invalid" translate>msg.save</button>
+        </md-dialog-actions>
+      </form>
+      </md-dialog>
+    </div>
+  </div>
+</div>

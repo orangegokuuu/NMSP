@@ -1,0 +1,71 @@
+<ol class="breadcrumb">
+  <li class="active"><i class="fa fa-home fa-fw"></i>Home</li>
+</ol>
+<div layout="column" ng-controller="DashboardCtrl">
+  <div class="pad10">
+    <md-card ng-repeat="mon in monit"> 
+      <md-card-title> 
+        <md-card-title-text >
+          <div layout="row" layout-align="space-between start">
+            <h4>
+              <i class="fa fa-power-off alert" ng-class="{true:'alert-success', false:'alert-danger'}[mon.system.status==0]"></i>
+              <a href="{{mon.server.baseUrl}}/{{mon.system.name}}" target="blank">{{mon.system.name}}</a>
+              <span ng-if="largeScreen">{{mon.monit.platform.name}}({{mon.monit.platform.release}})</span>
+            </h4>
+            <div class="dropdown" role="menu">
+              <md-button class="md-icon-button" data-toggle="dropdown">
+              <md-tooltip>Monit Menu</md-tooltip>
+                  <i class="fa fa-bars fa-fw" aria-hidden="true"></i> 
+              </md-button>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                <li ng-repeat="p in mon.process">
+                  <div class="pad10">
+                      <i class="fa fa-power-off alert" ng-class="{true:'alert-success', false:'alert-danger'}[p.status==0]"></i>
+                      <a href="{{mon.server.baseUrl}}/{{p.name}}" target="blank"><label>{{p.name}}</label></a>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </md-card-title-text> 
+      </md-card-title> 
+      <md-card-content layout="column">
+        <div layout-gt-sm="row" layout="column" layout-align-gt-sm="start start" layout-align="start start">
+          <div flex-sm="100" flex-xs="100" flex="50">
+            <canvas id="sysCPU" class="chart chart-line" height="250"  ng-if="largeScreen == false"
+               chart-data="sysCPU[mon.system.name].data" 
+               chart-labels="sysCPU[mon.system.name].labels" 
+               chart-series="sysCPU[mon.system.name].series" 
+               chart-options="cpuChartOption"
+               chart-colors="colors">
+            </canvas>
+            <canvas id="sysCPU" class="chart chart-line" ng-if="largeScreen == true"
+               chart-data="sysCPU[mon.system.name].data" 
+               chart-labels="sysCPU[mon.system.name].labels" 
+               chart-series="sysCPU[mon.system.name].series" 
+               chart-options="cpuChartOption"
+               chart-colors="colors">
+            </canvas>
+          </div>
+          <div flex-sm="100" flex-xs="100" flex="50">
+            <canvas id="sysMem" class="chart chart-line" height="250" ng-if="largeScreen == false"
+               chart-data="sysMem[mon.system.name].data" 
+               chart-labels="sysMem[mon.system.name].labels" 
+               chart-series="sysMem[mon.system.name].series" 
+               chart-options="memChartOption"
+               chart-colors="colors">
+            </canvas>
+            <canvas id="sysMem" class="chart chart-line" ng-if="largeScreen == true"
+               chart-data="sysMem[mon.system.name].data" 
+               chart-labels="sysMem[mon.system.name].labels" 
+               chart-series="sysMem[mon.system.name].series" 
+               chart-options="memChartOption"
+               chart-colors="colors">
+            </canvas>
+          </div>
+        </div>
+      </md-card-content> 
+    </md-card>
+  </div>
+
+</div>

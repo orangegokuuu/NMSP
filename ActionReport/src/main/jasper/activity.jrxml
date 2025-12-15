@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="activity" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="32879893-d95d-4d96-b87c-5ad17e3e9f82">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MSP"/>
+	<property name="net.sf.jasperreports.print.keep.full.text" value="TRUE"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="false"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="msp" uuid="071922d7-ceb7-43bc-8d3f-f5f5dd400a18">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MSP"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<parameter name="targetDate" class="java.lang.String">
+			<parameterDescription><![CDATA[]]></parameterDescription>
+		</parameter>
+		<queryString>
+			<![CDATA[select s1.DONE_BY ,
+s2.IP_ADDRESS ,
+TO_CHAR(s1.ACTION_DATE, 'YYYY-MM-DD HH24:MI:SS') ,
+'SAC' as server,
+'1' as trans,
+s1.ACTION_TYPE,
+s1.CLASS_NAME as targetObj,
+s4.PARAM_VALUE as PARAM_SQL,
+s1.METHOD_NAME as methodName,
+'NA' as resultObj,
+s1.STATUS,
+s3.PARAM_VALUE
+from COM_ACTION_LOG s1
+left outer join COM_USER_SESSION s2
+on s1.SESSION_ID = s2.SESSION_ID
+left outer join COM_ACTION_LOG_PARAM s3
+on s1.ACTION_ID = s3.ACTION_ID
+left outer join COM_ACTION_LOG_PARAM s4
+on s1.ACTION_ID = s4.ACTION_ID
+   where s1.ACTION_TYPE NOT IN ('MC10001', 'MC10002') AND s3.PARAM_INDEX = '1' AND s4.PARAM_INDEX = '2' AND s1.ACTION_DATE
+between TRUNC(TO_DATE($P{targetDate}, 'yyyyMMddHH24MI') , 'HH24') 
+and TRUNC(TO_DATE($P{targetDate}, 'yyyyMMddHH24MI') +1/24, 'HH24')
+ORDER BY s1.ACTION_DATE DESC]]>
+		</queryString>
+		<field name="DONE_BY" class="java.lang.String"/>
+		<field name="IP_ADDRESS" class="java.lang.String"/>
+		<field name="TO_CHAR(S1.ACTION_DATE,&apos;YYYY-MM-DDHH24:MI:SS&apos;)" class="java.lang.String"/>
+		<field name="SERVER" class="java.lang.String"/>
+		<field name="TRANS" class="java.lang.String"/>
+		<field name="ACTION_TYPE" class="java.lang.String"/>
+		<field name="TARGETOBJ" class="java.lang.String"/>
+		<field name="PARAM_SQL" class="java.lang.String"/>
+		<field name="METHODNAME" class="java.lang.String"/>
+		<field name="RESULTOBJ" class="java.lang.String"/>
+		<field name="STATUS" class="java.lang.String"/>
+		<field name="PARAM_VALUE" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="targetDate" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select 1 from dual]]>
+	</queryString>
+	<detail>
+		<band height="60" splitType="Stretch">
+			<componentElement>
+				<reportElement x="0" y="0" width="800" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="aaf4d0c4-795f-452d-b126-34448d7c2c36">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="com.jaspersoft.studio.components.autoresize.proportional" value="true"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="msp" uuid="ae1c1c42-01f9-4ac0-95a4-510e8e8eef74">
+						<datasetParameter name="targetDate">
+							<datasetParameterExpression><![CDATA[$P{targetDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="51" uuid="1b3cd5a1-6a71-4771-9bf9-e5e5da470da1">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="51" height="30" uuid="7f4b9a09-7ec0-47b8-86ec-918353b730a2"/>
+								<box padding="2"/>
+								<textFieldExpression><![CDATA[$F{DONE_BY}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="67" uuid="253af5ae-e4c4-40e1-91dd-2fed42925fb1">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="67" height="30" uuid="5ca9e629-6275-422f-8c4d-e37a18d7ede6"/>
+								<box padding="2"/>
+								<textFieldExpression><![CDATA[$F{IP_ADDRESS}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="59" uuid="4f40a680-c8f1-4517-83d0-bdb906c819d4">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="59" height="30" uuid="648d0965-9947-409c-9821-384d4338f67b"/>
+								<textFieldExpression><![CDATA[$F{TO_CHAR(S1.ACTION_DATE,'YYYY-MM-DDHH24:MI:SS')}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="51" uuid="62efdfd3-c25e-4e23-92d3-849bbff722cb">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="51" height="30" uuid="c43ff993-6e68-4942-89d3-2e5701a15817"/>
+								<box padding="2"/>
+								<textFieldExpression><![CDATA[null]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="51" uuid="6d1e5d19-dc8a-44cc-8fa6-5e5d0aa5b27c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="51" height="30" uuid="e588d469-5cfc-4338-b389-8e1f2df10b9f"/>
+								<textFieldExpression><![CDATA[$F{TRANS}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="66" uuid="74897165-dda8-4418-bd03-b9ded611d580">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == Integer.parseInt("1")]]></printWhenExpression>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="66" height="30" uuid="a0e1f6f6-a9fb-4d02-b73d-79a5fb9e82c7"/>
+								<textFieldExpression><![CDATA[$F{METHODNAME}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="79" uuid="2b41fef3-890d-4590-bd60-6b32720300ee">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="79" height="30" uuid="e7636819-0404-4729-ba7a-84344f7c5024"/>
+								<textFieldExpression><![CDATA[$F{ACTION_TYPE}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="87" uuid="877786da-121a-491c-a35d-79d31b195979">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="87" height="30" uuid="fa126074-6cc5-4b54-96d3-22786af3b462"/>
+								<textFieldExpression><![CDATA[$F{DONE_BY}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="66" uuid="54b89566-26ba-4574-87ad-90c2300030f8">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="66" height="30" uuid="f66e537a-8569-4350-bb48-d30418f35d39"/>
+								<textFieldExpression><![CDATA[$F{TARGETOBJ}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="91" uuid="df29f88d-968b-4666-8217-d5cbbf1621e8">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="91" height="30" uuid="a7830cc0-c139-4c39-9754-87248103843b"/>
+								<textFieldExpression><![CDATA[$F{PARAM_SQL}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="33" uuid="b347fdd8-32fd-403a-b2a5-0b9983bbcfcf">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="33" height="30" uuid="d3c0d86e-1d73-4a70-bcb6-648d8e7af1b6"/>
+								<textFieldExpression><![CDATA[$F{RESULTOBJ}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="33" uuid="f645269e-215b-4721-8fd2-4627c57c26b7">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="33" height="30" uuid="9a28d57a-06ab-43f4-8db9-01bfb1955a09"/>
+								<textFieldExpression><![CDATA[$F{STATUS}.matches( "SUCCESS" )?"Success":"Fail"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="33" uuid="ab11f47a-0476-493e-a706-83d2576f02f7">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="33" height="30" uuid="37ac51c3-1d83-4460-829d-e08833735feb"/>
+								<textFieldExpression><![CDATA[null]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="33" uuid="e5d191e3-b44b-4c22-893b-9b8dba573365">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="33" height="30" uuid="d2c33985-d53a-442c-a856-4ce4172a6304"/>
+								<textFieldExpression><![CDATA[$F{PARAM_VALUE}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>

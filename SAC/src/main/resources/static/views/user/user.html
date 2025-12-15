@@ -1,0 +1,187 @@
+<ol class="breadcrumb">
+  <li><a ui-sref="main"><i class="fa fa-home fa-fw"></i><span translate>menu.home</span></a></li>
+  <li class="active"><i class="fa fa-user-o fa-fw"></i><span translate>PT.USER</span></li>
+  <li class="active"><i class="fa fa-user fa-fw"></i><span translate>P.USER_01</span></li>
+</ol>
+
+<div class="panel panel-primary" ng-controller='User.UserCtrl'>
+  <div class="panel-heading" layout="row" layout-align="space-between center">
+    <span>Administrators</span>
+    <div class="btn-group">
+      <button id="refreshBtn" class="btn btn-xs btn-primary " ng-click="refreshGrid()">
+        <i class="fa fa-refresh fa-fw"></i>
+        <md-tooltip>{{'msg.refresh' | translate}}</md-tooltip>
+      </button>
+      <button id="addUserBtn" class="btn btn-xs btn-primary " ng-click="showCreateForm()" privilege="USER_01:write">
+        <i class="fa fa-plus-square fa-fw"></i>
+        <md-tooltip>{{'msg.add' | translate}}</md-tooltip>
+      </button>
+      <button id="editUserBtn" class="btn btn-xs btn-primary" ng-click="showUpdateForm()" ng-disabled="enableEdit!=true" privilege="USER_01:write">
+        <i class="fa fa-pencil-square fa-fw"></i>
+        <md-tooltip>{{'msg.modify' | translate}}</md-tooltip>
+      </button>
+    </div>
+  </div>
+  
+  <div ag-grid="grid" style="height: 300px; width: 99.9%;" class="ag-fresh"></div>
+  
+  <!-- Create Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="CreateDialog">
+    <md-dialog>
+      <form name="CreateForm" ng-submit="create(user)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Create New User</h4>
+        </div>
+        <div class="modal-body">
+          <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'user.user.msg.03' | translate}}" name="userId"
+                ng-model="user.userId" ng-required="true"></input>
+            </div>
+          </div>
+          <div class="alert alert-danger" ng-show="CreateForm.$dirty && CreateForm.userId.$error.required" translate>user.user.err.01</div>
+          
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'user.user.msg.04' | translate}}" name="userName"
+                ng-model="user.userName" autocomplete="false" />
+            </div>    
+          </div>
+          
+        <div class="form-group input-narrow">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span> 
+            <input type="password" class="form-control" placeholder="{{'user.user.msg.10' | translate}}" 
+            name="userPass" ng-model="user.password" ng-required="true" autocomplete="new-password" validatepwd/>
+          </div>  
+        </div>
+        
+	  <div  ng-messages="CreateForm.userPass.$error" ng-show="CreateForm.userPass.$dirty" class="input-narrow">
+	    <div class="alert alert-danger" ng-message="required" translate>auth.login.err.12</div>
+	  	<div class="alert alert-danger" ng-message="lowercaseValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.lowercase_req}} {{'auth.login.msg.20b'|translate}}</div>
+		<div class="alert alert-danger" ng-message="uppercaseValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.uppercase_req}} {{'auth.login.msg.20c'|translate}}</div>
+		<div class="alert alert-danger" ng-message="specialValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.special_req}} {{'auth.login.msg.20d'|translate}}</div>
+		<div class="alert alert-danger" ng-message="numberValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.num_req}} {{'auth.login.msg.20e'|translate}}</div>
+	    <div class="alert alert-danger" ng-message="lengthValidator">{{'auth.login.msg.20a'|translate}} {{"["+ pwdConfig.pwd_minL+ "-" + pwdConfig.pwd_maxL +"]"}} {{'auth.login.msg.20f'|translate}}</div>
+	  </div>
+
+          <div class="form-group input-narrow" ng-if="userSession.rights['USER_02'].writeEnable">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-id-card fa-fw"></i></span>
+              <select class="form-control" ng-model="user.role" name="role"
+                ng-options="role as role.roleId for role in roles" required>
+                <option value="" disabled selected>{{'user.user.msg.20' | translate}}</option>
+              </select>
+            </div>  
+          </div>
+          <div class="form-group input-narrow" ng-if="userSession.rights['USER_03'].writeEnable">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-users fa-fw"></i></span>
+              <select class="form-control" ng-model="user.group" name="group"
+                ng-options="group as group.groupId for group in groups" required>
+                <option value="" disabled selected>{{'user.user.msg.21' | translate}}</option>
+              </select>
+            </div>  
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" ng-disabled="CreateForm.$invalid" translate>msg.save</button>
+        </div>
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+  
+  <!-- Update Form -->
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="UpdateDialog">
+    <md-dialog>
+      <form name="UpdateForm" ng-submit="update(user)" autocomplete="false">
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="closeDialog()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Update User</h4>
+        </div>
+        <div class="modal-body">
+          <div ng-if="Error" class="alert alert-danger">{{ Error | translate}}</div>
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'user.user.msg.03' | translate}}" name="userId"
+                ng-model="user.userId" ng-required="true" disabled></input>
+            </div>
+          </div>
+          <div class="alert alert-danger" ng-show="CreateForm.$dirty && CreateForm.userId.$error.required" translate>user.user.err.01</div>
+          
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-info fa-fw"></i></span>
+              <input type="text" class="form-control" placeholder="{{'user.user.msg.04' | translate}}" name="userName"
+                ng-model="user.userName" autocomplete="false" />
+            </div>    
+          </div>
+          <div class="form-group input-narrow" ng-if="allowStatusEdit">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-power-off fa-fw"></i></span>
+              <select class="form-control" ng-model="user.status" name="status" required>
+                <option ng-selected="user.status == status.code" ng-repeat="status in statuses" ng-value="status.code">{{status.text | translate}}</option>
+              </select>
+            </div>  
+          </div>
+          <div class="form-group input-narrow" ng-if="userSession.rights['USER_02'].writeEnable">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-id-card fa-fw"></i></span>
+              <select class="form-control" ng-model="user.role" name="role" required>
+                <option ng-selected="user.role.roleId == role.roleId" ng-repeat="role in roles track by role.roleId" ng-value="role">{{role.roleName}}</option>
+              </select>
+            </div>  
+          </div>
+          <div class="form-group input-narrow" ng-if="userSession.rights['USER_03'].writeEnable">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-users fa-fw"></i></span>
+              <select class="form-control" ng-model="user.group" name="group" required>
+                <option ng-selected="user.group.groupId == group.groupId" ng-repeat="group in groups track by group.groupId" ng-value="group">{{group.groupName}}</option>
+              </select>
+            </div>  
+          </div>
+          <hr class="divider"></hr>
+          
+          <div class="form-group input-narrow">
+            <div class="input-group">
+              <div class="input-group-addon fa-fw"><input type="checkbox" ng-model="updatePass"></div>
+              <input type="password" class="form-control" placeholder="Update Password" name="userPass"
+                ng-model="user.password"  ng-required="updatePass && true" autocomplete="new-password" validatepwd/>
+            </div>    
+          </div>
+          
+          <div  ng-messages="UpdateForm.userPass.$error" ng-show="UpdateForm.userPass.$dirty" class="input-narrow">
+	    <div class="alert alert-danger" ng-message="required" translate>auth.login.err.12</div>
+	  	<div class="alert alert-danger" ng-message="lowercaseValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.lowercase_req}} {{'auth.login.msg.20b'|translate}}</div>
+		<div class="alert alert-danger" ng-message="uppercaseValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.uppercase_req}} {{'auth.login.msg.20c'|translate}}</div>
+		<div class="alert alert-danger" ng-message="specialValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.special_req}} {{'auth.login.msg.20d'|translate}}</div>
+		<div class="alert alert-danger" ng-message="numberValidator">{{'auth.login.msg.20a'|translate}} {{pwdConfig.num_req}} {{'auth.login.msg.20e'|translate}}</div>
+	    <div class="alert alert-danger" ng-message="lengthValidator">{{'auth.login.msg.20a'|translate}} {{"["+ pwdConfig.pwd_minL+ "-" + pwdConfig.pwd_maxL +"]"}} {{'auth.login.msg.20f'|translate}}</div>
+	  </div>
+          
+        </div>
+        <div class="modal-footer">
+          <div style="float:left;">
+            <button type="button" class="btn btn-danger" ng-click="confirmDelete(user)" translate>msg.del</button>
+          </div>
+          <div style="float:right;">
+            <button type="submit" class="btn btn-primary" ng-disabled="UpdateForm.$invalid" translate>msg.save</button>
+          </div>
+        </div>
+      </form>
+    </md-dialog>
+    </div>
+  </div>
+</div>

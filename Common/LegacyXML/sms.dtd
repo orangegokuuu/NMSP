@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!ELEMENT SMS ( SysId, Message+ ) >
+	<!ELEMENT SysId ( #PCDATA ) >
+	<!ELEMENT Message ( Target+, Source, Language, Text, DrFlag?, ValidPeriod? ) >
+		<!ELEMENT Target ( #PCDATA ) >
+			<!ATTLIST Target token NMTOKEN #IMPLIED >
+		<!ELEMENT Source ( #PCDATA ) >
+		<!ELEMENT Language ( #PCDATA ) >
+		<!ELEMENT Text ( #PCDATA ) >
+		<!ELEMENT DrFlag ( #PCDATA ) >
+		<!ELEMENT ValidPeriod ( #PCDATA ) >

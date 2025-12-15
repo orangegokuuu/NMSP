@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%-5level %d{HH:mm:ss.SSS} [%-50logger{1.}] - %msg%n" />
+		</Console>
+		<RollingFile name="HttpApiLog" fileName="${LOG_PATH}/httpAPI.log"
+			filePattern="${LOG_PATH}/httpAPI.log.%d{yyyy-MM-dd}">
+			<PatternLayout>
+				<Pattern>%-5p %d{yyyyMMdd HH:mm:ss.SSS} [%-40c{1.}].[%-20M]:%-5L - %msg%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="DEBUG">
+			<AppenderRef ref="Console" />
+		</Root>
+		<Logger name="org.springframework" level="ERROR" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.infinispan" level="ERROR" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="com.mchange" level="ERROR" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.hibernate" level="ERROR" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.crsh" level="ERROR" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.apache.tomcat" level="ERROR" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.apache.catalina" level="ERROR" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.apache.coyote.http11" level="ERROR" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="com.zaxxer.hikari.pool.HikariPool" level="DEBUG" additivity="false">
+			<AppenderRef ref="Console" />
+         </Logger>
+	</Loggers>
+</Configuration>
+

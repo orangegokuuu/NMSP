@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SMS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sms.xsd">
+  <SysId>SysId</SysId>
+  <Message>
+    <Target token="">Target</Target>
+    <Source>Source</Source>
+    <Language>Language</Language>
+    <Text>Text</Text>
+    <DrFlag>true</DrFlag>
+    <ValidPeriod>0</ValidPeriod>
+  </Message>
+</SMS>

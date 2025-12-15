@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema id="SmsMO" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="SmsMO">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Message" minOccurs="1" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Target" type="xs:string" />
+							<xs:element name="Language" type="xs:string" />
+							<xs:element name="Text" type="xs:string" />
+							<xs:element maxOccurs="1" name="Source" >
+								<xs:complexType>
+									<xs:simpleContent>
+									  <xs:extension base="xs:string">
+									    <xs:attribute name="token" type="xs:string" use="optional"/>
+									  </xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="DeliveryReport" minOccurs="0"
+								maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Id" type="xs:string" />
+										<xs:element name="SubmitDate" type="xs:string" />
+										<xs:element name="DoneDate" type="xs:string" />
+										<xs:element name="State" type="xs:string" />
+										<xs:element name="Error" type="xs:string" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,110 @@
+<div ng-app="MQSAC" class="md-padding" ng-cloak>
+	<div ng-controller="mqCtrl as ctrl" >
+	  <md-content class="md-padding">
+		
+		<div layout="column">
+			<div ng-if="error != null" class="alert alert-danger" style="display:inline-table;">{{ error }}</div>
+			<div ng-if="result != null" class="alert alert-success" style="display:inline-table;">{{ result }}</div>
+		</div>
+      	 
+		<div layout="column">
+			<div layout="column" layout-gt-sm="row">
+				
+				  <div name="cp-panel" class="panel panel-primary" style="display:inline-table;"  >
+					<div class="panel-heading" layout="row" layout-align="space-between center">
+						<span class="lead-margin-b-0">Change WaterLevel</span>
+						<div class="btn-cp">
+							<button id="refreshBtn" class="btn btn-xs btn-primary "
+								ng-click="refreshCpForm()">
+								<i class="fa fa-refresh fa-fw"></i>
+								<md-tooltip>Refresh</md-tooltip>
+							</button>
+						</div>
+					</div>
+					
+					<div class="panel-body">
+						<form name="UpdateCpForm">
+						
+							<div class="form-group">
+								<div class="input-group input-group-extend">
+									<span class="input-group-addon input-header-min-size-small"> <div class="required"><label>SYS ID</label></div></span> 
+	 								<input  type="text" class="form-control" name="tempCpId" ng-model="tempCpId" ng-required="true" ng-maxlength="30" autocomplete="false"></input>
+								</div>
+								<div ng-messages="UpdateCpForm.cpId.$error" ng-show="UpdateCpForm.cpId.$dirty" >
+							        <div ng-message="required" class="alert alert-danger margin-b-0" translate>This is required.</div>
+							        <div ng-message="maxlength" class="alert alert-danger margin-b-0" translate>Maximum length reached.</div>
+							    </div>
+							</div>
+							
+							 <div class="modal-footer">
+								<div style="float: right;">
+									<button type="button" class="btn btn-primary" 
+									ng-disabled="UpdateCpForm.$invalid" ng-click="openUpdateCpDialog(tempCpId)">Edit</button>
+								</div>
+							</div>
+							
+						</form>
+					</div>
+				</div>
+				
+		<!--Edit Source Address Form -->
+		<div style="visibility: hidden;">
+			<div class="md-dialog-container" id="UpdateCpDialog" >
+				<md-dialog class="pad10">
+				
+				<form name="UpdateSAForm" ng-submit="updateCp(cp)" autocomplete="false" >
+					<div class="modal-header">
+						<button type="button" class="close" ng-click="closeDialog()">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" >Update CP</h4>
+					</div>
+							
+					<div class="modal-body">	
+					
+						<div ng-if="error != null" class="alert alert-danger">{{ error }}</div>
+						
+						<div layout="column">
+							<div id="left" class="panel" ng-if="cp.legacy">
+								<div class="panel panel-primary">
+									<div class="panel-heading" layout="row">
+										<span>Update CP</span>
+									</div>
+									<!-- <md-content flex layout="column" class="pad10" > -->
+										<div class="form-group input-limited input-margin-top" >
+										  <div class="input-group">
+										    <span class="input-group-addon input-group-addon-extend"><div class="required">
+										    <label>SMS Limit</label></div></span> 
+										    <input  type="number" class="form-control" 
+									      name="smsLimit" ng-model="cp.smsLimit"  min="-1" max="2147483647" required ng-pattern="/^(0|\-?[1-9][0-9]*)$/"></input>
+			  							      	<span class="input-group-addon">
+								              hour(s)
+									      	</span>
+								          </div>
+									      <div ng-messages="UpdateSAForm.smsLimit.$error" ng-show="UpdateSAForm.smsLimit.$dirty">
+								            <div ng-message="required || number || pattern" class="alert alert-danger margin-b-0" translate>A valid SMS Limit is required.</div>
+								            <div ng-message="max" class="alert alert-danger margin-b-0" translate>Maximum length reached.</div>
+								          </div>
+										</div>
+									<!-- </md-content>  -->
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="modal-footer">
+						<div style="float: right;">
+							<button type="button" class="btn btn-primary" 
+							ng-disabled="UpdateSAForm.$invalid" ng-click="ctrl.saveCp(cp)">Save</button>
+						</div>
+					</div>
+					
+				</form>
+				</md-dialog>
+			</div>
+		</div>
+		
+      	 
+	  </md-content>
+	</div>
+</div>
